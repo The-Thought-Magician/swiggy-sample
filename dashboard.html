@@ -94,7 +94,7 @@
 
         .search-input {
             width: 100%;
-            padding: 16px 20px 16px 50px;
+            padding: 16px 72px 16px 50px;
             border: 2px solid #e9ecef;
             border-radius: 12px;
             font-size: 16px;
@@ -113,6 +113,67 @@
             transform: translateY(-50%);
             color: #666;
             font-size: 18px;
+        }
+
+        .search-voice {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: white;
+            color: #ff6b35;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 16px rgba(255, 107, 53, 0.15);
+            transition: all 0.2s ease;
+        }
+
+        .search-voice:hover {
+            transform: translateY(-50%) scale(1.05);
+        }
+
+        .search-voice.recording {
+            background: #ff6b35;
+            color: white;
+            animation: pulse 1.2s infinite;
+        }
+
+        .recent-searches {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .recent-title {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #999;
+            width: 100%;
+        }
+
+        .recent-chip {
+            padding: 6px 12px;
+            background: #f8f9fa;
+            border-radius: 16px;
+            border: 1px solid #e9ecef;
+            font-size: 12px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .recent-chip:hover {
+            border-color: #ff6b35;
+            color: #ff6b35;
         }
 
         .filter-chips {
@@ -146,6 +207,41 @@
             background: #ff6b35;
             color: white;
             border-color: #ff6b35;
+        }
+
+        .taste-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+            background: #fff5f2;
+            border: 1px solid #ffe0d6;
+            border-radius: 12px;
+            padding: 12px 16px;
+        }
+
+        .taste-summary-label {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.4px;
+            color: #ff6b35;
+        }
+
+        .taste-summary-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .taste-summary-chip {
+            padding: 6px 12px;
+            background: white;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #ff6b35;
+            border: 1px solid #ffd1bf;
         }
 
         .content-sections {
@@ -430,6 +526,310 @@
             transition: width 0.3s ease;
         }
 
+        .featured-card {
+            display: grid;
+            grid-template-columns: 1fr;
+            background: linear-gradient(135deg, #fff5f2 0%, #ffffff 100%);
+            border: 1px solid #ffe0d6;
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 10px 25px rgba(255, 107, 53, 0.12);
+        }
+
+        .featured-card-header {
+            padding: 16px 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: #ff6b35;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .featured-card-body {
+            padding: 16px 20px 20px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .featured-card-title {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .featured-card-title h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .featured-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .featured-tag {
+            padding: 6px 10px;
+            background: white;
+            border-radius: 14px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #ff6b35;
+            border: 1px solid #ffd1bf;
+        }
+
+        .featured-reason {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #555;
+        }
+
+        .featured-meta {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            color: #666;
+        }
+
+        .featured-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .featured-btn {
+            flex: 1;
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: 1px solid #ffd1bf;
+            background: white;
+            color: #ff6b35;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .featured-btn.primary {
+            background: #ff6b35;
+            color: white;
+            border-color: #ff6b35;
+        }
+
+        .featured-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 18px rgba(255, 107, 53, 0.2);
+        }
+
+        .search-results-section {
+            display: none;
+            margin-bottom: 32px;
+        }
+
+        .search-results-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .search-results-empty {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            color: #666;
+        }
+
+        .search-results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 16px;
+        }
+
+        .skeleton-card {
+            background: #f5f5f5;
+            border-radius: 12px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .skeleton-media {
+            height: 120px;
+            background: #e9ecef;
+        }
+
+        .skeleton-lines {
+            padding: 16px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .skeleton-line {
+            height: 12px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 6px;
+        }
+
+        .dashboard-layout {
+            display: block;
+        }
+
+        .chat-sidebar {
+            display: none;
+            width: 100%;
+            max-width: 340px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 18px 40px rgba(15, 23, 42, 0.12);
+            padding: 24px;
+            position: sticky;
+            top: 24px;
+        }
+
+        .chat-sidebar h3 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #ff6b35;
+            margin-bottom: 16px;
+        }
+
+        .chat-preview {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .chat-bubble {
+            padding: 12px 14px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.4;
+            background: #f8f9fa;
+            color: #333;
+        }
+
+        .chat-bubble.user {
+            background: #ffede4;
+            justify-self: end;
+        }
+
+        .chat-sidebar-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 10px;
+            border: none;
+            background: linear-gradient(90deg, #ff6b35, #f7931e);
+            color: white;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .chat-sidebar-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .location-modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 2000;
+        }
+
+        .location-modal.active {
+            display: flex;
+        }
+
+        .location-dialog {
+            background: white;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 420px;
+            padding: 24px;
+            box-shadow: 0 24px 60px rgba(15, 23, 42, 0.18);
+            display: grid;
+            gap: 16px;
+        }
+
+        .location-dialog header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 18px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .location-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .location-option {
+            padding: 14px 16px;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .location-option:hover {
+            border-color: #ff6b35;
+            background: #fff5f2;
+        }
+
+        .location-option.active {
+            border-color: #ff6b35;
+            background: #fff5f2;
+        }
+
+        .location-meta {
+            font-size: 12px;
+            color: #666;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 8px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 14px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .modal-btn.secondary {
+            background: #f8f9fa;
+            color: #555;
+            border: 1px solid #e9ecef;
+        }
+
+        .modal-btn.primary {
+            background: linear-gradient(90deg, #ff6b35, #f7931e);
+            color: white;
+        }
+
         .bottom-nav {
             position: fixed;
             bottom: 0;
@@ -480,77 +880,158 @@
             100% { background-position: -200% 0; }
         }
 
+        @keyframes pulse {
+            0%, 100% {
+                transform: translateY(-50%) scale(1);
+                box-shadow: 0 4px 16px rgba(255, 107, 53, 0.2);
+            }
+            50% {
+                transform: translateY(-50%) scale(1.08);
+                box-shadow: 0 6px 20px rgba(255, 107, 53, 0.3);
+            }
+        }
+
         @media (max-width: 480px) {
             .container { max-width: 100%; }
             .cards-grid { grid-template-columns: 1fr; }
             .bottom-nav { max-width: 100%; }
         }
+
+        @media (min-width: 768px) {
+            body {
+                padding-bottom: 0;
+                background: #f3f4f6;
+            }
+
+            .container {
+                max-width: 720px;
+                border-radius: 24px;
+                overflow: hidden;
+            }
+
+            .bottom-nav {
+                border-radius: 16px 16px 0 0;
+            }
+        }
+
+        @media (min-width: 1024px) {
+            body {
+                padding: 32px 24px;
+            }
+
+            .dashboard-layout {
+                display: flex;
+                gap: 32px;
+                max-width: 1180px;
+                margin: 0 auto;
+            }
+
+            .container {
+                max-width: 760px;
+                box-shadow: 0 24px 60px rgba(15, 23, 42, 0.08);
+            }
+
+            .chat-sidebar {
+                display: flex;
+                flex-direction: column;
+            }
+
+            .bottom-nav {
+                display: none;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="top-bar">
-            <div class="location-selector" onclick="showLocationModal()">
-                <span>📍</span>
-                <span class="location-text" id="currentLocation">Koramangala, Bangalore</span>
-                <span>▼</span>
-            </div>
-
-            <div class="top-actions">
-                <a href="profile.html" class="icon-btn">👤</a>
-                <a href="chat.html" class="icon-btn">💬</a>
-            </div>
-        </div>
-
-        <div class="search-header">
-            <div class="search-bar">
-                <span class="search-icon">🔍</span>
-                <input type="text"
-                       class="search-input"
-                       placeholder="Search for dishes, restaurants..."
-                       id="searchInput"
-                       onkeypress="handleSearch(event)">
-            </div>
-
-            <div class="filter-chips" id="filterChips">
-                <div class="filter-chip" data-filter="veg">🥗 Veg Only</div>
-                <div class="filter-chip" data-filter="budget">💰 Under ₹200</div>
-                <div class="filter-chip" data-filter="rating">⭐ High Rated</div>
-                <div class="filter-chip" data-filter="fast">⚡ Fast Delivery</div>
-                <div class="filter-chip" data-filter="offers">🏷️ Offers</div>
-            </div>
-        </div>
-
-        <div class="quick-actions">
-            <a href="chat.html" class="quick-action">
-                <div class="quick-action-icon">🤖</div>
-                <div class="quick-action-text">Ask AI</div>
-            </a>
-            <a href="favorites.html" class="quick-action">
-                <div class="quick-action-icon">❤️</div>
-                <div class="quick-action-text">Favorites</div>
-            </a>
-            <a href="profile.html" class="quick-action">
-                <div class="quick-action-icon">🏆</div>
-                <div class="quick-action-text">Badges</div>
-            </a>
-        </div>
-
-        <div class="content-sections">
-            <!-- Badge Progress Teaser -->
-            <div class="badge-teaser" onclick="window.location.href='profile.html'">
-                <div class="badge-teaser-header">
-                    <span class="badge-teaser-icon">🏆</span>
-                    <span class="badge-teaser-title">BTM Foodie Badge</span>
+    <div class="dashboard-layout">
+        <div class="container">
+            <div class="top-bar">
+                <div class="location-selector" onclick="showLocationModal()">
+                    <span>📍</span>
+                    <span class="location-text" id="currentLocation">Koramangala, Bangalore</span>
+                    <span>▼</span>
                 </div>
-                <div class="badge-teaser-desc">Try 2 more restaurants to unlock this badge!</div>
-                <div class="badge-progress">
-                    <div class="badge-progress-fill" style="width: 33%;"></div>
+
+                <div class="top-actions">
+                    <a href="profile.html" class="icon-btn">👤</a>
+                    <a href="chat.html" class="icon-btn">💬</a>
                 </div>
             </div>
 
-            <!-- Personalized Recommendations -->
-            <div class="section">
+            <div class="search-header">
+                <div class="search-bar">
+                    <span class="search-icon">🔍</span>
+                    <input type="text"
+                           class="search-input"
+                           placeholder="Search for dishes, restaurants..."
+                           id="searchInput">
+                    <button type="button" class="search-voice" id="voiceSearchBtn" onclick="toggleVoiceSearch()">🎤</button>
+                </div>
+
+                <div class="recent-searches" id="recentSearches"></div>
+
+                <div class="filter-chips" id="filterChips">
+                    <div class="filter-chip" data-filter="veg">🥗 Veg Only</div>
+                    <div class="filter-chip" data-filter="budget">💰 Under ₹200</div>
+                    <div class="filter-chip" data-filter="rating">⭐ High Rated</div>
+                    <div class="filter-chip" data-filter="fast">⚡ Fast Delivery</div>
+                    <div class="filter-chip" data-filter="offers">🏷️ Offers</div>
+                </div>
+
+                <div class="taste-summary" id="tasteSummary" style="display: none;">
+                    <span class="taste-summary-label">Personalised for you</span>
+                    <div class="taste-summary-chips" id="tasteSummaryChips"></div>
+                </div>
+            </div>
+
+            <div class="quick-actions">
+                <a href="chat.html" class="quick-action">
+                    <div class="quick-action-icon">🤖</div>
+                    <div class="quick-action-text">Ask AI</div>
+                </a>
+                <a href="favorites.html" class="quick-action">
+                    <div class="quick-action-icon">❤️</div>
+                    <div class="quick-action-text">Favorites</div>
+                </a>
+                <a href="profile.html" class="quick-action">
+                    <div class="quick-action-icon">🏆</div>
+                    <div class="quick-action-text">Badges</div>
+                </a>
+            </div>
+
+            <div class="content-sections">
+                <div class="search-results-section" id="searchResultsSection">
+                    <div class="search-results-header">
+                        <span id="searchResultsTitle">Results</span>
+                        <button class="view-all" onclick="clearSearch(event)">Clear</button>
+                    </div>
+                    <div id="searchResultsContent">
+                        <div class="search-results-grid" id="searchResultsGrid"></div>
+                    </div>
+                </div>
+                <!-- Badge Progress Teaser -->
+                <div class="badge-teaser" onclick="window.location.href='profile.html'">
+                    <div class="badge-teaser-header">
+                        <span class="badge-teaser-icon">🏆</span>
+                        <span class="badge-teaser-title">BTM Foodie Badge</span>
+                    </div>
+                    <div class="badge-teaser-desc">Try 2 more restaurants to unlock this badge!</div>
+                    <div class="badge-progress">
+                        <div class="badge-progress-fill" style="width: 33%;"></div>
+                    </div>
+                </div>
+
+                <!-- AI Featured Pick -->
+                <div class="section" id="featuredSection">
+                    <div class="section-header">
+                        <h2 class="section-title">AI Featured Pick</h2>
+                        <a href="#" class="view-all" onclick="refreshFeatured(event)">Refresh</a>
+                    </div>
+                    <div class="featured-card" id="featuredCard"></div>
+                </div>
+
+                <!-- Personalized Recommendations -->
+                <div class="section">
                 <div class="section-header">
                     <h2 class="section-title">Just For You</h2>
                     <a href="#" class="view-all">View All</a>
@@ -603,18 +1084,190 @@
         </div>
     </div>
 
+        <aside class="chat-sidebar" id="chatSidebar">
+            <h3>AI Assistant</h3>
+            <div class="chat-preview" id="chatSidebarPreview"></div>
+            <button class="chat-sidebar-btn" onclick="openChat()">Continue Conversation</button>
+        </aside>
+    </div>
+
+    <div class="location-modal" id="locationModal">
+        <div class="location-dialog">
+            <header>
+                Choose your location
+                <button class="location-close" onclick="closeLocationModal()">×</button>
+            </header>
+            <div class="location-option" data-location="Koramangala, Bangalore">
+                <div>
+                    <div style="font-weight: 600; color: #333;">Koramangala</div>
+                    <div class="location-meta">Bangalore • Tech & food hub</div>
+                </div>
+                <span>Use</span>
+            </div>
+            <div class="location-option" data-location="Indiranagar, Bangalore">
+                <div>
+                    <div style="font-weight: 600; color: #333;">Indiranagar</div>
+                    <div class="location-meta">Bangalore • Nightlife & brunch</div>
+                </div>
+                <span>Use</span>
+            </div>
+            <div class="location-option" data-location="BTM Layout, Bangalore">
+                <div>
+                    <div style="font-weight: 600; color: #333;">BTM Layout</div>
+                    <div class="location-meta">Bangalore • Student favourites</div>
+                </div>
+                <span>Use</span>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn secondary" onclick="closeLocationModal()">Cancel</button>
+                <button class="modal-btn primary" onclick="applyLocationSelection()">Apply Location</button>
+            </div>
+        </div>
+    </div>
+
     <script src="mock-data.js"></script>
     <script>
+        const RECENT_SEARCH_KEY = 'recentSearches';
+        const MAX_RECENT_SEARCHES = 6;
+        const SPICE_LABELS = ['No Spice', 'Mild', 'Mild+', 'Medium', 'Medium+', 'Hot', 'Very Hot'];
+
         let activeFilters = [];
         let favorites = JSON.parse(localStorage.getItem('favorites')) || { restaurants: [], dishes: [] };
+        let recentSearches = JSON.parse(localStorage.getItem(RECENT_SEARCH_KEY) || '[]');
+        let allRestaurants = [];
+        let allRestaurantsMap = {};
+        let allDishes = [];
+        let userPreferences = {};
+        let locationPreference = {};
+        let selectedLocation = 'Koramangala, Bangalore';
+        let pendingLocationSelection = null;
+        let featuredPick = null;
+        let currentSearchQuery = '';
+        let searchInput = null;
+        let voiceTimeout = null;
+
+        document.addEventListener('DOMContentLoaded', initializeDashboard);
+
+        function initializeDashboard() {
+            searchInput = document.getElementById('searchInput');
+            hydratePreferences();
+            attachEventListeners();
+            renderTasteSummary();
+            renderRecentSearches();
+            renderChatSidebar();
+            updateLocationLabel();
+            updateBadgeTeaser();
+            showSkeletons();
+            loadData();
+        }
+
+        function hydratePreferences() {
+            userPreferences = JSON.parse(localStorage.getItem('userPreferences') || '{}');
+            locationPreference = JSON.parse(localStorage.getItem('locationPreference') || '{}') || {};
+
+            if (locationPreference && locationPreference.label) {
+                selectedLocation = locationPreference.label;
+            }
+        }
+
+        function attachEventListeners() {
+            if (searchInput) {
+                searchInput.addEventListener('keydown', handleSearchKeydown);
+            }
+
+            document.querySelectorAll('.filter-chip').forEach(chip => {
+                chip.addEventListener('click', () => toggleFilter(chip));
+            });
+
+            document.querySelectorAll('.recent-searches').forEach(container => {
+                container.addEventListener('click', event => {
+                    const chip = event.target.closest('.recent-chip');
+                    if (chip) {
+                        performSearch(chip.dataset.query);
+                    }
+                });
+            });
+
+            document.querySelectorAll('.location-option').forEach(option => {
+                option.addEventListener('click', () => selectLocation(option));
+            });
+        }
+
+        function loadData() {
+            allRestaurants = mockAPI.getRestaurants();
+            allRestaurantsMap = Object.fromEntries(allRestaurants.map(r => [r.id, r]));
+            allDishes = mockAPI.getDishes();
+
+            setTimeout(() => {
+                renderDashboardSections();
+                selectFeaturedPick();
+                renderFeaturedCard();
+                renderSearchResults();
+            }, 400);
+        }
+
+        function showSkeletons() {
+            const skeletonCard = `
+                <div class="skeleton-card">
+                    <div class="skeleton-media"></div>
+                    <div class="skeleton-lines">
+                        <div class="skeleton-line" style="width: 70%;"></div>
+                        <div class="skeleton-line" style="width: 48%;"></div>
+                        <div class="skeleton-line" style="width: 60%;"></div>
+                    </div>
+                </div>`;
+
+            document.getElementById('personalizedCards').innerHTML = skeletonCard.repeat(4);
+            document.getElementById('trendingCards').innerHTML = skeletonCard.repeat(3);
+            document.getElementById('newRestaurants').innerHTML = skeletonCard.repeat(3);
+            document.getElementById('featuredCard').innerHTML = skeletonCard;
+        }
+
+        function renderDashboardSections() {
+            if (allDishes.length === 0) return;
+
+            const filteredDishes = filterDishes(allDishes);
+            const filteredRestaurants = filterRestaurants(allRestaurants);
+
+            renderDishList('personalizedCards', getPersonalizedDishes(filteredDishes).slice(0, 4));
+            renderDishList('trendingCards', getTrendingDishes(filteredDishes).slice(0, 3));
+            renderRestaurantList('newRestaurants', getNewRestaurants(filteredRestaurants).slice(0, 3));
+        }
+
+        function renderDishList(containerId, dishes) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            if (!dishes.length) {
+                container.innerHTML = '<div class="search-results-empty">No dishes match your filters yet. Try adjusting your filters or ask the AI assistant.</div>';
+                return;
+            }
+
+            container.innerHTML = dishes.map(dish => renderDishCard(dish, allRestaurantsMap[dish.restaurantId])).join('');
+        }
+
+        function renderRestaurantList(containerId, restaurants) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            if (!restaurants.length) {
+                container.innerHTML = '<div class="search-results-empty">No restaurants match your filters yet. Try expanding the radius or removing filters.</div>';
+                return;
+            }
+
+            container.innerHTML = restaurants.map(renderRestaurantCard).join('');
+        }
 
         function renderDishCard(dish, restaurant) {
+            if (!restaurant) return '';
             const isFavorite = favorites.dishes.includes(dish.id);
+
+            const badge = dish.tags.includes('Bestseller') ? '<div class="card-badge">Bestseller</div>' : '';
 
             return `
                 <div class="dish-card" onclick="viewDish(${dish.id})">
                     <div class="card-image" style="background-image: url('${dish.image}')">
-                        ${dish.tags.includes('Bestseller') ? '<div class="card-badge">Bestseller</div>' : ''}
+                        ${badge}
                         <button class="favorite-btn ${isFavorite ? 'active' : ''}"
                                 onclick="event.stopPropagation(); toggleFavorite('dish', ${dish.id})">
                             ${isFavorite ? '❤️' : '🤍'}
@@ -625,9 +1278,7 @@
                         <div class="card-subtitle">${restaurant.name}</div>
                         <div class="card-meta">
                             <div class="card-price">₹${dish.price}</div>
-                            <div class="card-rating">
-                                ⭐ ${dish.rating}
-                            </div>
+                            <div class="card-rating">⭐ ${dish.rating}</div>
                         </div>
                     </div>
                 </div>
@@ -657,33 +1308,86 @@
             `;
         }
 
-        function loadDashboard() {
-            const restaurants = mockAPI.getRestaurants();
-            const dishes = mockAPI.getDishes();
+        function filterDishes(dishes = allDishes) {
+            return dishes.filter(dish => {
+                if (activeFilters.includes('veg') && !dish.veg) return false;
+                if (activeFilters.includes('budget') && dish.price > 200) return false;
+                if (activeFilters.includes('rating') && dish.rating < 4.5) return false;
+                if (activeFilters.includes('offers') && !dish.tags.some(tag => tag.toLowerCase().includes('bestseller') || tag.toLowerCase().includes('premium'))) return false;
+                if (activeFilters.includes('fast')) {
+                    const restaurant = allRestaurantsMap[dish.restaurantId];
+                    if (!restaurant || !isFastEta(restaurant.deliveryEta)) return false;
+                }
+                return true;
+            });
+        }
 
-            // Personalized recommendations (dishes)
-            const personalizedContainer = document.getElementById('personalizedCards');
-            const personalizedDishes = dishes.slice(0, 4);
+        function filterRestaurants(restaurants = allRestaurants) {
+            return restaurants.filter(restaurant => {
+                if (activeFilters.includes('budget') && restaurant.avgCost > 400) return false;
+                if (activeFilters.includes('rating') && restaurant.rating < 4.3) return false;
+                if (activeFilters.includes('fast') && !isFastEta(restaurant.deliveryEta)) return false;
+                if (activeFilters.includes('veg')) {
+                    const hasVegDish = allDishes.some(dish => dish.restaurantId === restaurant.id && dish.veg);
+                    if (!hasVegDish) return false;
+                }
+                return true;
+            });
+        }
 
-            personalizedContainer.innerHTML = personalizedDishes.map(dish => {
-                const restaurant = restaurants.find(r => r.id === dish.restaurantId);
-                return renderDishCard(dish, restaurant);
-            }).join('');
+        function isFastEta(eta) {
+            if (!eta) return false;
+            const match = eta.match(/\d+/);
+            if (!match) return false;
+            const minutes = parseInt(match[0], 10);
+            return minutes <= 25;
+        }
 
-            // Trending dishes (as list)
-            const trendingContainer = document.getElementById('trendingCards');
-            const trendingDishes = dishes.slice(1, 4);
+        function getPersonalizedDishes(dishes) {
+            const cuisinePrefs = (userPreferences.cuisines || []).map(c => c.toLowerCase());
+            const dietaryPrefs = (userPreferences.dietary || []).map(d => d.toLowerCase());
+            const preferredSpice = typeof userPreferences.spiceLevel === 'number' ? userPreferences.spiceLevel : 3;
+            const budgetPreference = userPreferences.budget || 400;
 
-            trendingContainer.innerHTML = trendingDishes.map(dish => {
-                const restaurant = restaurants.find(r => r.id === dish.restaurantId);
-                return renderDishCard(dish, restaurant);
-            }).join('');
+            return [...dishes]
+                .map(dish => {
+                    const restaurant = allRestaurantsMap[dish.restaurantId];
+                    let score = dish.rating;
 
-            // New restaurants
-            const newRestaurantsContainer = document.getElementById('newRestaurants');
-            newRestaurantsContainer.innerHTML = restaurants.slice(0, 2).map(restaurant =>
-                renderRestaurantCard(restaurant)
-            ).join('');
+                    if (restaurant && cuisinePrefs.length) {
+                        if (restaurant.cuisines.some(c => cuisinePrefs.includes(c.toLowerCase()))) {
+                            score += 0.6;
+                        }
+                    }
+
+                    if (dietaryPrefs.some(pref => pref.includes('veg')) && dish.veg) {
+                        score += 0.4;
+                    }
+
+                    if (dish.price <= budgetPreference) {
+                        score += 0.3;
+                    }
+
+                    const isSpicy = dish.tags.some(tag => tag.toLowerCase().includes('spicy'));
+                    if (isSpicy && preferredSpice >= 3) {
+                        score += 0.2;
+                    }
+
+                    return { ...dish, score };
+                })
+                .sort((a, b) => b.score - a.score);
+        }
+
+        function getTrendingDishes(dishes) {
+            return [...dishes].sort((a, b) => {
+                const bonusA = a.tags.includes('Bestseller') ? 0.4 : 0;
+                const bonusB = b.tags.includes('Bestseller') ? 0.4 : 0;
+                return (b.rating + bonusB) - (a.rating + bonusA);
+            });
+        }
+
+        function getNewRestaurants(restaurants) {
+            return [...restaurants].sort((a, b) => b.id - a.id);
         }
 
         function toggleFavorite(type, id) {
@@ -694,7 +1398,7 @@
                 } else {
                     favorites.dishes.push(id);
                 }
-            } else if (type === 'restaurant') {
+            } else {
                 const index = favorites.restaurants.indexOf(id);
                 if (index > -1) {
                     favorites.restaurants.splice(index, 1);
@@ -703,8 +1407,14 @@
                 }
             }
 
+            persistFavorites();
+            renderDashboardSections();
+            renderSearchResults();
+            renderFeaturedCard();
+        }
+
+        function persistFavorites() {
             localStorage.setItem('favorites', JSON.stringify(favorites));
-            loadDashboard(); // Refresh to update heart icons
         }
 
         function viewDish(dishId) {
@@ -715,54 +1425,390 @@
             window.location.href = `restaurant-detail.html?id=${restaurantId}`;
         }
 
-        function handleSearch(event) {
+        function handleSearchKeydown(event) {
             if (event.key === 'Enter') {
-                const query = event.target.value.trim();
-                if (query) {
-                    window.location.href = `search.html?q=${encodeURIComponent(query)}`;
-                }
+                event.preventDefault();
+                performSearch(event.target.value.trim());
             }
         }
 
-        function showLocationModal() {
-            // In a real app, this would show a location picker modal
-            alert('Location picker would open here');
+        function performSearch(query) {
+            const normalized = query.trim();
+            if (!normalized) {
+                clearSearch();
+                return;
+            }
+
+            currentSearchQuery = normalized;
+            searchInput.value = normalized;
+            storeRecentSearch(normalized);
+            renderRecentSearches();
+            renderSearchResults();
         }
 
-        // Filter chip functionality
-        document.querySelectorAll('.filter-chip').forEach(chip => {
-            chip.addEventListener('click', function() {
-                const filter = this.dataset.filter;
+        function clearSearch(event) {
+            if (event) event.preventDefault();
+            currentSearchQuery = '';
+            if (searchInput) {
+                searchInput.value = '';
+            }
+            renderSearchResults();
+        }
 
-                if (this.classList.contains('active')) {
-                    this.classList.remove('active');
-                    activeFilters = activeFilters.filter(f => f !== filter);
-                } else {
-                    this.classList.add('active');
-                    activeFilters.push(filter);
-                }
+        function storeRecentSearch(query) {
+            recentSearches = recentSearches.filter(item => item.toLowerCase() !== query.toLowerCase());
+            recentSearches.unshift(query);
+            if (recentSearches.length > MAX_RECENT_SEARCHES) {
+                recentSearches = recentSearches.slice(0, MAX_RECENT_SEARCHES);
+            }
+            localStorage.setItem(RECENT_SEARCH_KEY, JSON.stringify(recentSearches));
+        }
 
-                applyFilters();
+        function renderRecentSearches() {
+            const container = document.getElementById('recentSearches');
+            if (!container) return;
+
+            if (!recentSearches.length) {
+                container.innerHTML = '';
+                return;
+            }
+
+            const chips = recentSearches
+                .map(query => {
+                    const safeQuery = query
+                        .replace(/&/g, '&amp;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&#39;');
+                    return `<div class="recent-chip" data-query="${safeQuery}">${safeQuery}</div>`;
+                })
+                .join('');
+
+            container.innerHTML = `<span class="recent-title">Recent Searches</span>${chips}`;
+        }
+
+        function renderSearchResults() {
+            const section = document.getElementById('searchResultsSection');
+            const title = document.getElementById('searchResultsTitle');
+            const grid = document.getElementById('searchResultsGrid');
+
+            if (!section || !grid) return;
+
+            if (!currentSearchQuery) {
+                section.style.display = 'none';
+                grid.innerHTML = '';
+                return;
+            }
+
+            const query = currentSearchQuery.toLowerCase();
+            title.textContent = `Results for “${currentSearchQuery}”`;
+
+            const matchingDishes = filterDishes().filter(dish => {
+                return dish.name.toLowerCase().includes(query) ||
+                       dish.tags.some(tag => tag.toLowerCase().includes(query));
             });
+
+            const matchingRestaurants = filterRestaurants().filter(restaurant => {
+                return restaurant.name.toLowerCase().includes(query) ||
+                       restaurant.cuisines.join(' ').toLowerCase().includes(query);
+            });
+
+            if (!matchingDishes.length && !matchingRestaurants.length) {
+                grid.innerHTML = '<div class="search-results-empty">No matches yet. Try another phrase or tap “Ask AI” for tailored help.</div>';
+            } else {
+                const dishCards = matchingDishes.slice(0, 6).map(dish => renderDishCard(dish, allRestaurantsMap[dish.restaurantId]));
+                const restaurantCards = matchingRestaurants.slice(0, 4).map(renderRestaurantCard);
+                grid.innerHTML = dishCards.concat(restaurantCards).join('');
+            }
+
+            section.style.display = 'block';
+        }
+
+        function toggleFilter(chip) {
+            const filter = chip.dataset.filter;
+            if (chip.classList.contains('active')) {
+                chip.classList.remove('active');
+                activeFilters = activeFilters.filter(item => item !== filter);
+            } else {
+                chip.classList.add('active');
+                activeFilters.push(filter);
+            }
+
+            renderDashboardSections();
+            renderSearchResults();
+            selectFeaturedPick();
+            renderFeaturedCard();
+        }
+
+        function toggleVoiceSearch() {
+            const button = document.getElementById('voiceSearchBtn');
+            if (!button) return;
+
+            if (button.classList.contains('recording')) {
+                endVoiceSearch();
+            } else {
+                startVoiceSearch();
+            }
+        }
+
+        function startVoiceSearch() {
+            const button = document.getElementById('voiceSearchBtn');
+            button.classList.add('recording');
+            button.textContent = '⏹️';
+
+            voiceTimeout = setTimeout(() => {
+                endVoiceSearch();
+                performSearch('Best biryani near me');
+            }, 1800);
+        }
+
+        function endVoiceSearch() {
+            const button = document.getElementById('voiceSearchBtn');
+            button.classList.remove('recording');
+            button.textContent = '🎤';
+            if (voiceTimeout) {
+                clearTimeout(voiceTimeout);
+            }
+        }
+
+        function renderTasteSummary() {
+            const summary = document.getElementById('tasteSummary');
+            const chipsContainer = document.getElementById('tasteSummaryChips');
+            if (!summary || !chipsContainer) return;
+
+            const chips = [];
+
+            (userPreferences.cuisines || []).forEach(cuisine => {
+                chips.push(`<span class="taste-summary-chip">${cuisine}</span>`);
+            });
+
+            (userPreferences.dietary || []).forEach(dietary => {
+                chips.push(`<span class="taste-summary-chip">${dietary}</span>`);
+            });
+
+            if (typeof userPreferences.spiceLevel === 'number') {
+                const spiceLabel = SPICE_LABELS[userPreferences.spiceLevel] || 'Balanced';
+                chips.push(`<span class="taste-summary-chip">Spice: ${spiceLabel}</span>`);
+            }
+
+            if (userPreferences.budget) {
+                chips.push(`<span class="taste-summary-chip">Budget ≈ ₹${userPreferences.budget}</span>`);
+            }
+
+            if (chips.length) {
+                summary.style.display = 'flex';
+                chipsContainer.innerHTML = chips.join('');
+            } else {
+                summary.style.display = 'none';
+            }
+        }
+
+        function selectFeaturedPick() {
+            const personalized = getPersonalizedDishes(filterDishes());
+            featuredPick = personalized.length ? personalized[0] : filterDishes()[0];
+        }
+
+        function renderFeaturedCard() {
+            const container = document.getElementById('featuredCard');
+            if (!container) return;
+
+            if (!featuredPick) {
+                container.innerHTML = '<div class="search-results-empty">We will surface the best pick for you shortly.</div>';
+                return;
+            }
+
+            const restaurant = allRestaurantsMap[featuredPick.restaurantId];
+            const reason = buildFeaturedReason(featuredPick, restaurant);
+            const isFavorite = favorites.dishes.includes(featuredPick.id);
+
+            container.innerHTML = `
+                <div class="featured-card-header">
+                    AI knows your cravings
+                    <span>${selectedLocation.split(',')[0].trim()}</span>
+                </div>
+                <div class="featured-card-body">
+                    <div class="featured-card-title">
+                        <div class="featured-tag">⭐ ${featuredPick.rating}</div>
+                        <h3>${featuredPick.name}</h3>
+                    </div>
+                    <div class="featured-meta">
+                        <span>₹${featuredPick.price}</span>
+                        <span>${restaurant ? restaurant.name : ''}</span>
+                        <span>${featuredPick.tags.slice(0,2).join(' • ')}</span>
+                    </div>
+                    <div class="featured-tags">
+                        ${featuredPick.tags.map(tag => `<span class="featured-tag">${tag}</span>`).join('')}
+                    </div>
+                    <div class="featured-reason">${reason}</div>
+                    <div class="featured-actions">
+                        <button class="featured-btn" onclick="toggleFavorite('dish', ${featuredPick.id})">${isFavorite ? '❤️ Saved' : '♡ Save'}</button>
+                        <button class="featured-btn primary" onclick="viewDish(${featuredPick.id})">View Dish</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function buildFeaturedReason(dish, restaurant) {
+            if (!restaurant) {
+                return 'Top rated by locals near you.';
+            }
+
+            const reasons = [];
+            const cuisines = restaurant.cuisines.join(', ');
+
+            if ((userPreferences.cuisines || []).some(cuisine => cuisines.toLowerCase().includes(cuisine.toLowerCase()))) {
+                reasons.push(`matches your love for ${cuisines}`);
+            }
+
+            if ((userPreferences.dietary || []).some(pref => pref.toLowerCase().includes('veg')) && dish.veg) {
+                reasons.push('is vegetarian friendly');
+            }
+
+            if (userPreferences.budget && dish.price <= userPreferences.budget) {
+                reasons.push(`stays within your ₹${userPreferences.budget} comfort zone`);
+            }
+
+            if (dish.tags.some(tag => tag.toLowerCase().includes('spicy')) && typeof userPreferences.spiceLevel === 'number' && userPreferences.spiceLevel >= 3) {
+                reasons.push('brings the spice level you prefer');
+            }
+
+            if (!reasons.length) {
+                return `A community favourite from ${restaurant.name} that shines in ${selectedLocation.split(',')[0].trim()}.`;
+            }
+
+            if (reasons.length === 1) {
+                return `We picked this because it ${reasons[0]}.`;
+            }
+
+            const last = reasons.pop();
+            return `We picked this because it ${reasons.join(', ')} and ${last}.`;
+        }
+
+        function refreshFeatured(event) {
+            if (event) event.preventDefault();
+            const pool = getPersonalizedDishes(filterDishes());
+            featuredPick = pool[Math.floor(Math.random() * pool.length)] || pool[0];
+            renderFeaturedCard();
+        }
+
+        function renderChatSidebar() {
+            const container = document.getElementById('chatSidebarPreview');
+            if (!container) return;
+
+            let messages = JSON.parse(localStorage.getItem('chatMessages') || '[]');
+            if (!messages.length) {
+                messages = mockAPI.getChatMessages().slice(-3);
+            }
+
+            const previewMessages = messages.slice(-3).map(message => {
+                const alignment = message.type === 'user' ? 'user' : '';
+                return `<div class="chat-bubble ${alignment}">${message.content}</div>`;
+            });
+
+            container.innerHTML = previewMessages.join('') || '<div class="chat-bubble">Ask anything about food, delivery times, or cravings — the assistant is ready.</div>';
+        }
+
+        function openChat() {
+            window.location.href = 'chat.html';
+        }
+
+        function showLocationModal() {
+            pendingLocationSelection = selectedLocation;
+            const modal = document.getElementById('locationModal');
+            modal.classList.add('active');
+            highlightSelectedLocation();
+        }
+
+        function closeLocationModal() {
+            document.getElementById('locationModal').classList.remove('active');
+        }
+
+        function selectLocation(option) {
+            pendingLocationSelection = option.dataset.location;
+            highlightSelectedLocation();
+        }
+
+        function highlightSelectedLocation() {
+            document.querySelectorAll('.location-option').forEach(option => {
+                option.classList.toggle('active', option.dataset.location === pendingLocationSelection);
+            });
+        }
+
+        function applyLocationSelection() {
+            if (!pendingLocationSelection) return;
+            selectedLocation = pendingLocationSelection;
+            locationPreference = {
+                enabled: true,
+                label: selectedLocation
+            };
+            localStorage.setItem('locationPreference', JSON.stringify(locationPreference));
+            updateLocationLabel();
+            updateBadgeTeaser();
+            renderFeaturedCard();
+            renderDashboardSections();
+            renderSearchResults();
+            closeLocationModal();
+        }
+
+        function updateLocationLabel() {
+            const locationLabel = document.getElementById('currentLocation');
+            if (locationLabel) {
+                locationLabel.textContent = selectedLocation;
+            }
+        }
+
+        function updateBadgeTeaser() {
+            const titleEl = document.querySelector('.badge-teaser-title');
+            const descEl = document.querySelector('.badge-teaser-desc');
+            const progressEl = document.querySelector('.badge-progress-fill');
+
+            if (!titleEl || !descEl || !progressEl) return;
+
+            const area = selectedLocation.split(',')[0].trim().toLowerCase();
+            const badges = mockAPI.getBadges();
+            const matchingBadge = badges.find(badge => badge.areaId.includes(area.split(' ')[0]));
+
+            if (matchingBadge) {
+                titleEl.textContent = matchingBadge.name;
+                const remaining = Math.max(matchingBadge.progress.total - matchingBadge.progress.completed, 0);
+                descEl.textContent = remaining
+                    ? `Try ${remaining} more place${remaining > 1 ? 's' : ''} in ${selectedLocation.split(',')[0].trim()} to unlock this badge!`
+                    : 'Badge unlocked — keep discovering to maintain your streak!';
+                progressEl.style.width = `${(matchingBadge.progress.completed / matchingBadge.progress.total) * 100}%`;
+            } else {
+                titleEl.textContent = `${selectedLocation.split(',')[0].trim()} Explorer`;
+                descEl.textContent = 'Discover local favourites to unlock more gamified rewards.';
+                progressEl.style.width = '30%';
+            }
+        }
+
+        // Check if onboarding is completed
+        function checkOnboardingStatus() {
+            const userPreferences = localStorage.getItem('userPreferences');
+            if (!userPreferences) {
+                window.location.href = 'onboarding.html';
+                return false;
+            }
+            return true;
+        }
+
+        // Initialize app if onboarding is complete
+        document.addEventListener('DOMContentLoaded', function() {
+            if (checkOnboardingStatus()) {
+                initializeDashboard();
+            }
         });
 
-        function applyFilters() {
-            // In a real app, this would filter the displayed content
-            console.log('Active filters:', activeFilters);
-        }
-
-        // Load dashboard on page load
-        document.addEventListener('DOMContentLoaded', loadDashboard);
-
-        // Welcome message for first-time users
-        const hasOnboarded = localStorage.getItem('userPreferences');
-        if (!hasOnboarded) {
-            setTimeout(() => {
-                if (confirm('Welcome to Swiggy Companion! Would you like to set up your preferences for better recommendations?')) {
-                    window.location.href = 'onboarding.html';
-                }
-            }, 1000);
-        }
+        // Expose some functions globally for inline handlers
+        window.toggleVoiceSearch = toggleVoiceSearch;
+        window.refreshFeatured = refreshFeatured;
+        window.clearSearch = clearSearch;
+        window.openChat = openChat;
+        window.showLocationModal = showLocationModal;
+        window.closeLocationModal = closeLocationModal;
+        window.applyLocationSelection = applyLocationSelection;
+        window.toggleFavorite = toggleFavorite;
+        window.viewDish = viewDish;
+        window.viewRestaurant = viewRestaurant;
     </script>
 </body>
 </html>

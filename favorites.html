@@ -79,6 +79,23 @@
             background: #fff5f2;
         }
 
+        .selection-toggle {
+            background: none;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 8px 12px;
+            font-size: 14px;
+            cursor: pointer;
+            color: #666;
+            transition: all 0.2s ease;
+        }
+
+        .selection-toggle.active {
+            border-color: #ff6b35;
+            background: #fff5f2;
+            color: #ff6b35;
+        }
+
         .filter-tabs {
             display: flex;
             background: white;
@@ -170,6 +187,95 @@
         .favorite-card:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .favorite-card.selected {
+            border-color: #ff6b35;
+            box-shadow: 0 6px 20px rgba(255, 107, 53, 0.18);
+        }
+
+        .select-marker {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            border: 2px solid #ff6b35;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #ff6b35;
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.2);
+            transition: transform 0.2s ease;
+        }
+
+        .favorite-card.selected .select-marker {
+            background: #ff6b35;
+            color: white;
+        }
+
+        .selection-mode .favorite-card {
+            padding-top: 12px;
+        }
+
+        .selection-mode .remove-btn {
+            display: none;
+        }
+
+        .bulk-action-bar {
+            position: fixed;
+            bottom: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border: 1px solid #ffe0d6;
+            border-radius: 16px;
+            box-shadow: 0 12px 30px rgba(255, 107, 53, 0.18);
+            padding: 16px;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            z-index: 100;
+        }
+
+        .bulk-info {
+            font-size: 14px;
+            color: #ff6b35;
+            font-weight: 600;
+        }
+
+        .bulk-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .bulk-btn {
+            padding: 12px 16px;
+            border-radius: 10px;
+            border: none;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .bulk-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .bulk-btn.secondary {
+            background: #fff5f2;
+            color: #ff6b35;
+        }
+
+        .bulk-btn.primary {
+            background: linear-gradient(90deg, #ff6b35, #f7931e);
+            color: white;
         }
 
         .card-content {
@@ -490,6 +596,44 @@
         @media (max-width: 480px) {
             .container { max-width: 100%; }
             .bottom-nav { max-width: 100%; }
+            .bulk-action-bar { max-width: 100%; bottom: 72px; }
+        }
+
+        .skeleton-card {
+            background: #f5f5f5;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            position: relative;
+            border: 1px solid #eee;
+        }
+
+        .skeleton-media {
+            height: 80px;
+            background: #e9ecef;
+        }
+
+        .skeleton-lines {
+            padding: 16px;
+            display: grid;
+            gap: 10px;
+        }
+
+        .skeleton-line {
+            height: 12px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 6px;
+        }
+
+        .skeleton-line.wide { width: 100%; }
+        .skeleton-line.medium { width: 70%; }
+        .skeleton-line.narrow { width: 40%; }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
         }
     </style>
 </head>
@@ -500,9 +644,12 @@
                 <button class="back-btn" onclick="goBack()">←</button>
                 <h1 class="page-title">Favorites</h1>
             </div>
-            <button class="filter-btn" onclick="showFilters()">
-                🔽 Filter
-            </button>
+            <div style="display: flex; gap: 8px;">
+                <button class="selection-toggle" id="selectionToggle" onclick="toggleSelectionMode()">Select</button>
+                <button class="filter-btn" onclick="showFilters()">
+                    🔽 Filter
+                </button>
+            </div>
         </div>
 
         <div class="filter-tabs">
@@ -558,6 +705,14 @@
                 <div class="empty-title">No favorites yet</div>
                 <div class="empty-desc">Start exploring and add your favorite restaurants and dishes!</div>
                 <a href="dashboard.html" class="empty-action">Discover Food</a>
+            </div>
+        </div>
+
+        <div class="bulk-action-bar" id="bulkActionBar">
+            <div class="bulk-info" id="bulkCount">0 selected</div>
+            <div class="bulk-actions">
+                <button class="bulk-btn secondary" onclick="shareSelection()">Share</button>
+                <button class="bulk-btn primary" onclick="removeSelection()">Remove</button>
             </div>
         </div>
 
@@ -634,6 +789,8 @@
             price: []
         };
         let favorites = { restaurants: [], dishes: [] };
+        let selectionMode = false;
+        let selectedItems = { restaurants: [], dishes: [] };
 
         function goBack() {
             window.location.href = 'dashboard.html';
@@ -811,9 +968,11 @@
         }
 
         function renderRestaurantCard(restaurant) {
+            const isSelected = selectedItems.restaurants.includes(restaurant.id);
             return `
-                <div class="favorite-card" onclick="viewRestaurant(${restaurant.id})">
-                    <button class="remove-btn" onclick="event.stopPropagation(); removeFavorite('restaurant', ${restaurant.id})">×</button>
+                <div class="favorite-card ${isSelected ? 'selected' : ''}" onclick="handleCardClick('restaurant', ${restaurant.id})">
+                    ${selectionMode ? `<div class="select-marker">${isSelected ? '✓' : ''}</div>` : ''}
+                    <button class="remove-btn" onclick="event.stopPropagation(); removeFavorite('restaurant', ${restaurant.id})" ${selectionMode ? 'style="display: none;"' : ''}>×</button>
                     <div class="card-image" style="background-image: url('${restaurant.image}')"></div>
                     <div class="restaurant-card-content">
                         <div class="restaurant-name">${restaurant.name}</div>
@@ -829,9 +988,11 @@
 
         function renderDishCard(dish) {
             const restaurant = mockAPI.getRestaurantById(dish.restaurantId);
+            const isSelected = selectedItems.dishes.includes(dish.id);
             return `
-                <div class="favorite-card" onclick="viewDish(${dish.id})">
-                    <button class="remove-btn" onclick="event.stopPropagation(); removeFavorite('dish', ${dish.id})">×</button>
+                <div class="favorite-card ${isSelected ? 'selected' : ''}" onclick="handleCardClick('dish', ${dish.id})">
+                    ${selectionMode ? `<div class="select-marker">${isSelected ? '✓' : ''}</div>` : ''}
+                    <button class="remove-btn" onclick="event.stopPropagation(); removeFavorite('dish', ${dish.id})" ${selectionMode ? 'style="display: none;"' : ''}>×</button>
                     <div class="card-content">
                         <div class="card-image" style="background-image: url('${dish.image}')"></div>
                         <div class="card-info">
@@ -899,6 +1060,108 @@
                 closeFilters();
             }
         });
+
+        // Selection Mode Functions
+        function toggleSelectionMode() {
+            selectionMode = !selectionMode;
+            const toggle = document.getElementById('selectionToggle');
+            const body = document.body;
+
+            if (selectionMode) {
+                toggle.textContent = 'Cancel';
+                toggle.classList.add('active');
+                body.classList.add('selection-mode');
+                selectedItems = { restaurants: [], dishes: [] };
+            } else {
+                toggle.textContent = 'Select';
+                toggle.classList.remove('active');
+                body.classList.remove('selection-mode');
+                selectedItems = { restaurants: [], dishes: [] };
+                updateBulkActionBar();
+            }
+
+            loadFavorites();
+        }
+
+        function handleCardClick(type, id) {
+            if (selectionMode) {
+                toggleItemSelection(type, id);
+            } else {
+                if (type === 'restaurant') {
+                    viewRestaurant(id);
+                } else {
+                    viewDish(id);
+                }
+            }
+        }
+
+        function toggleItemSelection(type, id) {
+            const items = selectedItems[type + 's'];
+            const index = items.indexOf(id);
+
+            if (index > -1) {
+                items.splice(index, 1);
+            } else {
+                items.push(id);
+            }
+
+            updateBulkActionBar();
+            loadFavorites();
+        }
+
+        function updateBulkActionBar() {
+            const totalSelected = selectedItems.restaurants.length + selectedItems.dishes.length;
+            const bulkBar = document.getElementById('bulkActionBar');
+            const bulkCount = document.getElementById('bulkCount');
+
+            if (totalSelected > 0) {
+                bulkBar.style.display = 'flex';
+                bulkCount.textContent = `${totalSelected} selected`;
+            } else {
+                bulkBar.style.display = 'none';
+            }
+        }
+
+        function shareSelection() {
+            const totalSelected = selectedItems.restaurants.length + selectedItems.dishes.length;
+            if (totalSelected === 0) return;
+
+            const shareText = `Check out my favorite food selections from Swiggy Companion!`;
+            if (navigator.share) {
+                navigator.share({
+                    title: 'My Favorites',
+                    text: shareText,
+                    url: window.location.href
+                });
+            } else {
+                navigator.clipboard.writeText(shareText);
+                alert('Favorites list shared to clipboard!');
+            }
+        }
+
+        function removeSelection() {
+            const totalSelected = selectedItems.restaurants.length + selectedItems.dishes.length;
+            if (totalSelected === 0) return;
+
+            if (confirm(`Remove ${totalSelected} selected items from favorites?`)) {
+                // Remove selected restaurants
+                selectedItems.restaurants.forEach(id => {
+                    const index = favorites.restaurants.indexOf(id);
+                    if (index > -1) favorites.restaurants.splice(index, 1);
+                });
+
+                // Remove selected dishes
+                selectedItems.dishes.forEach(id => {
+                    const index = favorites.dishes.indexOf(id);
+                    if (index > -1) favorites.dishes.splice(index, 1);
+                });
+
+                localStorage.setItem('favorites', JSON.stringify(favorites));
+                selectedItems = { restaurants: [], dishes: [] };
+                toggleSelectionMode(); // Exit selection mode
+                loadFavorites();
+            }
+        }
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', loadFavorites);

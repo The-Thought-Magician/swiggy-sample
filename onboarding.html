@@ -67,8 +67,76 @@
         }
 
         .main-content {
-            padding: 32px 24px;
-            min-height: calc(100vh - 200px);
+            padding: 32px 24px 140px;
+        }
+
+        .onboarding-layout {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .steps-container {
+            flex: 1;
+            min-height: 360px;
+        }
+
+        .summary-panel {
+            background: #fff5f2;
+            border: 1px solid #ffe0d6;
+            border-radius: 16px;
+            padding: 20px;
+            box-shadow: 0 8px 24px rgba(255, 107, 53, 0.08);
+        }
+
+        .summary-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #ff6b35;
+        }
+
+        .summary-section {
+            margin-bottom: 16px;
+        }
+
+        .summary-label {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            color: #999;
+            margin-bottom: 6px;
+        }
+
+        .summary-value {
+            font-size: 14px;
+            color: #333;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .summary-chip {
+            padding: 6px 12px;
+            background: white;
+            border-radius: 16px;
+            border: 1px solid #ffd1bf;
+            font-size: 12px;
+            font-weight: 600;
+            color: #ff6b35;
+        }
+
+        .summary-empty {
+            font-size: 13px;
+            color: #999;
+        }
+
+        .summary-footer {
+            font-size: 12px;
+            color: #666;
+            margin-top: 12px;
+            line-height: 1.4;
         }
 
         .step {
@@ -125,6 +193,7 @@
         .cuisine-card.selected {
             border-color: #ff6b35;
             background: #fff5f2;
+            animation: cardPop 0.3s ease;
         }
 
         .cuisine-icon {
@@ -164,6 +233,7 @@
             border-color: #ff6b35;
             background: #ff6b35;
             color: white;
+            animation: cardPop 0.3s ease;
         }
 
         .slider-container {
@@ -307,6 +377,49 @@
             margin-top: 16px;
         }
 
+        .location-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 16px;
+        }
+
+        .location-btn {
+            padding: 14px 20px;
+            border-radius: 8px;
+            border: none;
+            font-size: 15px;
+            font-weight: 600;
+            background: linear-gradient(90deg, #ff6b35, #f7931e);
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .location-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(255, 107, 53, 0.28);
+        }
+
+        .location-btn.secondary {
+            background: transparent;
+            color: #ff6b35;
+            border: 1px dashed #ffb28f;
+            box-shadow: none;
+        }
+
+        .location-status {
+            font-size: 14px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        @keyframes cardPop {
+            0% { transform: scale(0.95); }
+            60% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
         @media (max-width: 480px) {
             .container {
                 max-width: 100%;
@@ -318,6 +431,33 @@
 
             .navigation {
                 max-width: 100%;
+            }
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                max-width: 960px;
+            }
+
+            .main-content {
+                padding: 40px 48px 160px;
+            }
+
+            .onboarding-layout {
+                flex-direction: row;
+                align-items: flex-start;
+            }
+
+            .steps-container {
+                flex: 2;
+                padding-right: 24px;
+                min-height: 440px;
+            }
+
+            .summary-panel {
+                flex: 1;
+                position: sticky;
+                top: 140px;
             }
         }
     </style>
@@ -336,91 +476,147 @@
         </div>
 
         <div class="main-content">
-            <!-- Step 1: Welcome -->
-            <div class="step active" id="step1">
-                <div class="welcome-content">
-                    <div class="welcome-icon">🎉</div>
-                    <div class="step-title">Welcome to Swiggy Companion!</div>
-                    <div class="step-subtitle">Your AI-powered food discovery assistant. Let's set up your taste profile to give you the best recommendations.</div>
+            <div class="onboarding-layout">
+                <div class="steps-container">
+                    <!-- Step 1: Welcome -->
+                    <div class="step active" id="step1">
+                        <div class="welcome-content">
+                            <div class="welcome-icon">🎉</div>
+                            <div class="step-title">Welcome to Swiggy Companion!</div>
+                            <div class="step-subtitle">Your AI-powered food discovery assistant. Let's set up your taste profile to give you the best recommendations.</div>
 
-                    <div class="location-permission">
-                        <div class="location-icon">📍</div>
-                        <div style="font-weight: 600; margin-bottom: 8px;">Enable Location</div>
-                        <div style="font-size: 14px; color: #666;">We'll use your location to find restaurants nearby and track your area exploration progress.</div>
+                            <div class="location-permission">
+                                <div class="location-icon">📍</div>
+                                <div style="font-weight: 600; margin-bottom: 8px;">Enable Location</div>
+                                <div style="font-size: 14px; color: #666;">We'll use your location to find restaurants nearby and track your area exploration progress.</div>
+                                <div class="location-actions">
+                                    <button class="location-btn" id="locationBtn" onclick="enableLocation()">Allow precise location</button>
+                                    <button class="location-btn secondary" onclick="skipLocation()">I'll choose a city later</button>
+                                    <div class="location-status" id="locationStatus">Location not enabled yet</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="skip-btn" onclick="skipLocation()">Skip for now</button>
+                    </div>
+
+                    <!-- Step 2: Cuisine Preferences -->
+                    <div class="step" id="step2">
+                        <div class="step-title">What cuisines do you love?</div>
+                        <div class="step-subtitle">Select your favorite types of food. Don't worry, you can always change this later!</div>
+
+                        <div class="cuisine-grid">
+                            <div class="cuisine-card" data-cuisine="North Indian">
+                                <div class="cuisine-icon">🍛</div>
+                                <div class="cuisine-name">North Indian</div>
+                            </div>
+                            <div class="cuisine-card" data-cuisine="South Indian">
+                                <div class="cuisine-icon">🥘</div>
+                                <div class="cuisine-name">South Indian</div>
+                            </div>
+                            <div class="cuisine-card" data-cuisine="Chinese">
+                                <div class="cuisine-icon">🥡</div>
+                                <div class="cuisine-name">Chinese</div>
+                            </div>
+                            <div class="cuisine-card" data-cuisine="Italian">
+                                <div class="cuisine-icon">🍝</div>
+                                <div class="cuisine-name">Italian</div>
+                            </div>
+                            <div class="cuisine-card" data-cuisine="Continental">
+                                <div class="cuisine-icon">🍽️</div>
+                                <div class="cuisine-name">Continental</div>
+                            </div>
+                            <div class="cuisine-card" data-cuisine="Desserts">
+                                <div class="cuisine-icon">🍰</div>
+                                <div class="cuisine-name">Desserts</div>
+                            </div>
+                        </div>
+
+                        <button class="skip-btn" onclick="skipCurrentStep()">Skip this step</button>
+                    </div>
+
+                    <!-- Step 3: Dietary Preferences -->
+                    <div class="step" id="step3">
+                        <div class="step-title">Any dietary preferences?</div>
+                        <div class="step-subtitle">Help us filter options that match your lifestyle and dietary needs.</div>
+
+                        <div class="dietary-options">
+                            <div class="dietary-chip" data-dietary="Vegetarian">🥗 Vegetarian</div>
+                            <div class="dietary-chip" data-dietary="Vegan">🌱 Vegan</div>
+                            <div class="dietary-chip" data-dietary="Non-Vegetarian">🍖 Non-Vegetarian</div>
+                            <div class="dietary-chip" data-dietary="Gluten-Free">🌾 Gluten-Free</div>
+                            <div class="dietary-chip" data-dietary="Dairy-Free">🥛 Dairy-Free</div>
+                            <div class="dietary-chip" data-dietary="Keto">🥑 Keto</div>
+                        </div>
+
+                        <button class="skip-btn" onclick="skipDietary()">Skip this step</button>
+                    </div>
+
+                    <!-- Step 4: Taste Profile -->
+                    <div class="step" id="step4">
+                        <div class="step-title">Tell us about your taste!</div>
+                        <div class="step-subtitle">This helps us understand your preferences better.</div>
+
+                        <div class="slider-container">
+                            <div class="slider-label">How spicy do you like your food?</div>
+                            <input type="range" min="0" max="5" value="3" class="slider" id="spiceSlider">
+                            <div class="slider-labels">
+                                <span>Mild</span>
+                                <span>Medium</span>
+                                <span>Very Spicy</span>
+                            </div>
+                        </div>
+
+                        <div class="slider-container">
+                            <div class="slider-label">Typical budget per meal</div>
+                            <input type="range" min="50" max="1000" value="300" class="slider" id="budgetSlider">
+                            <div class="budget-display" id="budgetDisplay">₹300</div>
+                        </div>
+
+                        <button class="skip-btn" onclick="skipCurrentStep()">Skip (keep defaults)</button>
                     </div>
                 </div>
-            </div>
 
-            <!-- Step 2: Cuisine Preferences -->
-            <div class="step" id="step2">
-                <div class="step-title">What cuisines do you love?</div>
-                <div class="step-subtitle">Select your favorite types of food. Don't worry, you can always change this later!</div>
-
-                <div class="cuisine-grid">
-                    <div class="cuisine-card" data-cuisine="north-indian">
-                        <div class="cuisine-icon">🍛</div>
-                        <div class="cuisine-name">North Indian</div>
+                <aside class="summary-panel">
+                    <div class="summary-title">Your Taste Profile</div>
+                    <div class="summary-section">
+                        <div class="summary-label">Progress</div>
+                        <div class="summary-value" id="summaryProgress">Step 1 of 4</div>
                     </div>
-                    <div class="cuisine-card" data-cuisine="south-indian">
-                        <div class="cuisine-icon">🥘</div>
-                        <div class="cuisine-name">South Indian</div>
+                    <div class="summary-section">
+                        <div class="summary-label">Location</div>
+                        <div class="summary-value" id="summaryLocation">
+                            <span class="summary-empty">Not enabled yet</span>
+                        </div>
                     </div>
-                    <div class="cuisine-card" data-cuisine="chinese">
-                        <div class="cuisine-icon">🥡</div>
-                        <div class="cuisine-name">Chinese</div>
+                    <div class="summary-section">
+                        <div class="summary-label">Cuisines</div>
+                        <div class="summary-value" id="summaryCuisines">
+                            <span class="summary-empty">Choose your favourites</span>
+                        </div>
                     </div>
-                    <div class="cuisine-card" data-cuisine="italian">
-                        <div class="cuisine-icon">🍝</div>
-                        <div class="cuisine-name">Italian</div>
+                    <div class="summary-section">
+                        <div class="summary-label">Dietary</div>
+                        <div class="summary-value" id="summaryDietary">
+                            <span class="summary-empty">No restrictions yet</span>
+                        </div>
                     </div>
-                    <div class="cuisine-card" data-cuisine="continental">
-                        <div class="cuisine-icon">🍽️</div>
-                        <div class="cuisine-name">Continental</div>
+                    <div class="summary-section">
+                        <div class="summary-label">Spice Level</div>
+                        <div class="summary-value" id="summarySpice">
+                            <span class="summary-empty">Set your spice preference</span>
+                        </div>
                     </div>
-                    <div class="cuisine-card" data-cuisine="desserts">
-                        <div class="cuisine-icon">🍰</div>
-                        <div class="cuisine-name">Desserts</div>
+                    <div class="summary-section">
+                        <div class="summary-label">Budget</div>
+                        <div class="summary-value" id="summaryBudget">
+                            <span class="summary-empty">Adjust during setup</span>
+                        </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Step 3: Dietary Preferences -->
-            <div class="step" id="step3">
-                <div class="step-title">Any dietary preferences?</div>
-                <div class="step-subtitle">Help us filter options that match your lifestyle and dietary needs.</div>
-
-                <div class="dietary-options">
-                    <div class="dietary-chip" data-dietary="vegetarian">🥗 Vegetarian</div>
-                    <div class="dietary-chip" data-dietary="vegan">🌱 Vegan</div>
-                    <div class="dietary-chip" data-dietary="non-veg">🍖 Non-Vegetarian</div>
-                    <div class="dietary-chip" data-dietary="gluten-free">🌾 Gluten-Free</div>
-                    <div class="dietary-chip" data-dietary="dairy-free">🥛 Dairy-Free</div>
-                    <div class="dietary-chip" data-dietary="keto">🥑 Keto</div>
-                </div>
-
-                <button class="skip-btn" onclick="skipDietary()">Skip this step</button>
-            </div>
-
-            <!-- Step 4: Taste Profile -->
-            <div class="step" id="step4">
-                <div class="step-title">Tell us about your taste!</div>
-                <div class="step-subtitle">This helps us understand your preferences better.</div>
-
-                <div class="slider-container">
-                    <div class="slider-label">How spicy do you like your food?</div>
-                    <input type="range" min="0" max="5" value="2" class="slider" id="spiceSlider">
-                    <div class="slider-labels">
-                        <span>Mild</span>
-                        <span>Medium</span>
-                        <span>Very Spicy</span>
+                    <div class="summary-footer">
+                        We'll use this information to personalise restaurant discovery, chat suggestions, and badge progress. You can edit everything later from your profile.
                     </div>
-                </div>
-
-                <div class="slider-container">
-                    <div class="slider-label">Typical budget per meal</div>
-                    <input type="range" min="50" max="1000" value="300" class="slider" id="budgetSlider">
-                    <div class="budget-display" id="budgetDisplay">₹300</div>
-                </div>
+                </aside>
             </div>
         </div>
 
@@ -436,31 +632,62 @@
         const totalSteps = 4;
         let selectedCuisines = [];
         let selectedDietary = [];
-        let spiceLevel = 2;
+        let spiceLevel = 3;
         let budget = 300;
+        let locationPreference = {
+            enabled: false,
+            label: 'Not enabled yet'
+        };
+
+        const spiceLabels = ['No Spice', 'Mild', 'Mild+', 'Medium', 'Medium+', 'Hot', 'Very Hot'];
 
         function updateProgress() {
             const progressPercent = (currentStep / totalSteps) * 100;
             document.getElementById('progressFill').style.width = progressPercent + '%';
             document.getElementById('stepInfo').textContent = `Step ${currentStep} of ${totalSteps}`;
+            updateSummary();
+        }
+
+        function updateSummary() {
+            document.getElementById('summaryProgress').textContent = `Step ${currentStep} of ${totalSteps}`;
+
+            const locationEl = document.getElementById('summaryLocation');
+            if (locationPreference.enabled) {
+                locationEl.innerHTML = `<span class="summary-chip">📍 ${locationPreference.label}</span>`;
+            } else if (locationPreference.label && locationPreference.label !== 'Not enabled yet') {
+                locationEl.innerHTML = `<span class="summary-chip">${locationPreference.label}</span>`;
+            } else {
+                locationEl.innerHTML = '<span class="summary-empty">Not enabled yet</span>';
+            }
+
+            const cuisinesEl = document.getElementById('summaryCuisines');
+            if (selectedCuisines.length > 0) {
+                cuisinesEl.innerHTML = selectedCuisines.map(cuisine => `<span class="summary-chip">${cuisine}</span>`).join('');
+            } else {
+                cuisinesEl.innerHTML = '<span class="summary-empty">Choose your favourites</span>';
+            }
+
+            const dietaryEl = document.getElementById('summaryDietary');
+            if (selectedDietary.length > 0) {
+                dietaryEl.innerHTML = selectedDietary.map(dietary => `<span class="summary-chip">${dietary}</span>`).join('');
+            } else {
+                dietaryEl.innerHTML = '<span class="summary-empty">No restrictions yet</span>';
+            }
+
+            const spiceLabel = spiceLabels[spiceLevel] || 'Medium';
+            document.getElementById('summarySpice').innerHTML = `<span class="summary-chip">${spiceLabel} (${spiceLevel + 1}/6)</span>`;
+
+            document.getElementById('summaryBudget').innerHTML = `<span class="summary-chip">₹${budget}</span>`;
         }
 
         function showStep(step) {
-            // Hide all steps
             document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
-
-            // Show current step
             document.getElementById('step' + step).classList.add('active');
 
-            // Update navigation
             document.getElementById('backBtn').style.display = step > 1 ? 'block' : 'none';
 
             const continueBtn = document.getElementById('continueBtn');
-            if (step === totalSteps) {
-                continueBtn.textContent = 'Get Started!';
-            } else {
-                continueBtn.textContent = 'Continue';
-            }
+            continueBtn.textContent = step === totalSteps ? 'Get Started!' : 'Continue';
 
             updateProgress();
         }
@@ -470,7 +697,6 @@
                 currentStep++;
                 showStep(currentStep);
             } else {
-                // Save preferences and navigate to dashboard
                 savePreferences();
                 window.location.href = 'dashboard.html';
             }
@@ -483,25 +709,52 @@
             }
         }
 
+        function skipCurrentStep() {
+            if (currentStep === 3) {
+                selectedDietary = [];
+                document.querySelectorAll('.dietary-chip.selected').forEach(chip => chip.classList.remove('selected'));
+            }
+            goNext();
+        }
+
+        function skipDietary() {
+            selectedDietary = [];
+            document.querySelectorAll('.dietary-chip.selected').forEach(chip => chip.classList.remove('selected'));
+            updateSummary();
+            goNext();
+        }
+
+        function skipLocation() {
+            locationPreference = {
+                enabled: false,
+                label: 'Will choose later'
+            };
+            document.getElementById('locationStatus').textContent = 'Location skipped for now';
+            document.getElementById('locationBtn').disabled = false;
+            document.getElementById('locationBtn').textContent = 'Enable location';
+            persistLocationPreference();
+            updateSummary();
+            goNext();
+        }
+
+        function persistLocationPreference() {
+            localStorage.setItem('locationPreference', JSON.stringify(locationPreference));
+        }
+
         function savePreferences() {
             const preferences = {
                 cuisines: selectedCuisines,
                 dietary: selectedDietary,
                 spiceLevel: spiceLevel,
                 budget: budget,
+                location: locationPreference,
                 onboardingCompleted: true
             };
 
             localStorage.setItem('userPreferences', JSON.stringify(preferences));
-            console.log('Preferences saved:', preferences);
+            persistLocationPreference();
         }
 
-        function skipDietary() {
-            selectedDietary = [];
-            goNext();
-        }
-
-        // Cuisine selection
         document.querySelectorAll('.cuisine-card').forEach(card => {
             card.addEventListener('click', function() {
                 const cuisine = this.dataset.cuisine;
@@ -511,14 +764,15 @@
                     selectedCuisines = selectedCuisines.filter(c => c !== cuisine);
                 } else {
                     this.classList.add('selected');
-                    selectedCuisines.push(cuisine);
+                    if (!selectedCuisines.includes(cuisine)) {
+                        selectedCuisines.push(cuisine);
+                    }
                 }
 
-                console.log('Selected cuisines:', selectedCuisines);
+                updateSummary();
             });
         });
 
-        // Dietary selection
         document.querySelectorAll('.dietary-chip').forEach(chip => {
             chip.addEventListener('click', function() {
                 const dietary = this.dataset.dietary;
@@ -528,45 +782,126 @@
                     selectedDietary = selectedDietary.filter(d => d !== dietary);
                 } else {
                     this.classList.add('selected');
-                    selectedDietary.push(dietary);
+                    if (!selectedDietary.includes(dietary)) {
+                        selectedDietary.push(dietary);
+                    }
                 }
 
-                console.log('Selected dietary:', selectedDietary);
+                updateSummary();
             });
         });
 
-        // Spice level slider
-        document.getElementById('spiceSlider').addEventListener('input', function() {
+        const spiceSlider = document.getElementById('spiceSlider');
+        spiceSlider.addEventListener('input', function() {
             spiceLevel = parseInt(this.value);
+            updateSummary();
         });
 
-        // Budget slider
-        document.getElementById('budgetSlider').addEventListener('input', function() {
+        const budgetSlider = document.getElementById('budgetSlider');
+        budgetSlider.addEventListener('input', function() {
             budget = parseInt(this.value);
             document.getElementById('budgetDisplay').textContent = '₹' + budget;
+            updateSummary();
         });
 
-        // Initialize
-        updateProgress();
-
-        // Enable location permission simulation
         function enableLocation() {
+            const statusEl = document.getElementById('locationStatus');
+            const button = document.getElementById('locationBtn');
+
+            statusEl.textContent = 'Detecting your location...';
+            button.disabled = true;
+            button.textContent = 'Detecting...';
+
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
                     (position) => {
-                        console.log('Location enabled:', position.coords);
-                        localStorage.setItem('locationEnabled', 'true');
+                        const coordinates = `${position.coords.latitude.toFixed(2)}, ${position.coords.longitude.toFixed(2)}`;
+                        locationPreference = {
+                            enabled: true,
+                            label: `Live near ${coordinates}`,
+                            coordinates
+                        };
+                        statusEl.textContent = 'Location enabled successfully';
+                        button.textContent = 'Location Enabled';
+                        persistLocationPreference();
+                        updateSummary();
                     },
-                    (error) => {
-                        console.log('Location permission denied');
-                        // Continue anyway
+                    () => {
+                        statusEl.textContent = 'Permission denied. You can retry or skip.';
+                        button.disabled = false;
+                        button.textContent = 'Retry location access';
+                        locationPreference.enabled = false;
+                        updateSummary();
                     }
                 );
+            } else {
+                statusEl.textContent = 'Location services unavailable on this device.';
+                button.disabled = false;
+                button.textContent = 'Enable location';
             }
         }
 
-        // Auto-enable location on page load
-        enableLocation();
+        function hydrateFromStorage() {
+            const storedPreferences = localStorage.getItem('userPreferences');
+            const storedLocation = localStorage.getItem('locationPreference');
+
+            if (storedLocation) {
+                try {
+                    locationPreference = JSON.parse(storedLocation);
+                } catch (e) {
+                    locationPreference = { enabled: false, label: 'Not enabled yet' };
+                }
+            }
+
+            if (storedPreferences) {
+                try {
+                    const parsed = JSON.parse(storedPreferences);
+                    if (Array.isArray(parsed.cuisines)) {
+                        selectedCuisines = parsed.cuisines;
+                        document.querySelectorAll('.cuisine-card').forEach(card => {
+                            if (selectedCuisines.includes(card.dataset.cuisine)) {
+                                card.classList.add('selected');
+                            }
+                        });
+                    }
+                    if (Array.isArray(parsed.dietary)) {
+                        selectedDietary = parsed.dietary;
+                        document.querySelectorAll('.dietary-chip').forEach(chip => {
+                            if (selectedDietary.includes(chip.dataset.dietary)) {
+                                chip.classList.add('selected');
+                            }
+                        });
+                    }
+                    if (typeof parsed.spiceLevel === 'number') {
+                        spiceLevel = parsed.spiceLevel;
+                        spiceSlider.value = spiceLevel;
+                    }
+                    if (typeof parsed.budget === 'number') {
+                        budget = parsed.budget;
+                        budgetSlider.value = budget;
+                        document.getElementById('budgetDisplay').textContent = '₹' + budget;
+                    }
+                    if (parsed.location) {
+                        locationPreference = parsed.location;
+                    }
+                } catch (e) {
+                    console.warn('Unable to hydrate onboarding preferences', e);
+                }
+            }
+
+            if (locationPreference.enabled) {
+                document.getElementById('locationStatus').textContent = 'Location already enabled';
+                document.getElementById('locationBtn').textContent = 'Location Enabled';
+                document.getElementById('locationBtn').disabled = true;
+            }
+
+            updateSummary();
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            hydrateFromStorage();
+            updateProgress();
+        });
     </script>
 </body>
 </html>

@@ -36,6 +36,30 @@ const mockData = {
       tags: ["Authentic", "Spicy"],
       image: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&h=300&fit=crop",
       description: "Traditional South Indian flavors with authentic spices and preparations"
+    },
+    {
+      id: 4,
+      name: "Pizza Corner",
+      location: "Koramangala",
+      cuisines: ["Italian", "Continental", "Fast Food"],
+      rating: 4.1,
+      avgCost: 400,
+      deliveryEta: "30-35 mins",
+      tags: ["Comfort Food", "Late Night"],
+      image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=300&fit=crop",
+      description: "Authentic wood-fired pizzas with fresh toppings and gooey cheese"
+    },
+    {
+      id: 5,
+      name: "Taco Bell",
+      location: "Indiranagar",
+      cuisines: ["Mexican", "Fast Food", "Tex-Mex"],
+      rating: 3.9,
+      avgCost: 300,
+      deliveryEta: "25-30 mins",
+      tags: ["Quick Bites", "Spicy"],
+      image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop",
+      description: "Mexican-inspired quick bites with bold flavors and fresh ingredients"
     }
   ],
 
@@ -87,6 +111,54 @@ const mockData = {
       tags: ["Premium", "Spicy", "Slow Cooked"],
       availability: true,
       image: "https://images.unsplash.com/photo-1563379091339-03246963d96c?w=400&h=300&fit=crop"
+    },
+    {
+      id: 5,
+      restaurantId: 4,
+      name: "Margherita Pizza",
+      description: "Classic pizza with fresh mozzarella, tomato sauce, and basil",
+      price: 320,
+      rating: 4.2,
+      veg: true,
+      tags: ["Classic", "Cheesy", "Italian"],
+      availability: true,
+      image: "https://images.unsplash.com/photo-1513104890138-7c749659a591?w=400&h=300&fit=crop"
+    },
+    {
+      id: 6,
+      restaurantId: 5,
+      name: "Crunchwrap Supreme",
+      description: "Crispy tortilla wrap with seasoned beef, lettuce, tomatoes, and sauce",
+      price: 250,
+      rating: 4.0,
+      veg: false,
+      tags: ["Crunchy", "Spicy", "Mexican"],
+      availability: true,
+      image: "https://images.unsplash.com/photo-1565299624946-b28f40a0ca4b?w=400&h=300&fit=crop"
+    },
+    {
+      id: 7,
+      restaurantId: 2,
+      name: "Quinoa Power Bowl",
+      description: "Nutritious quinoa bowl with roasted vegetables, nuts, and tahini dressing",
+      price: 320,
+      rating: 4.4,
+      veg: true,
+      tags: ["Healthy", "Protein Rich", "Gluten Free"],
+      availability: true,
+      image: "https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=400&h=300&fit=crop"
+    },
+    {
+      id: 8,
+      restaurantId: 3,
+      name: "Idli Sambar",
+      description: "Soft steamed rice cakes served with lentil curry and coconut chutney",
+      price: 80,
+      rating: 4.6,
+      veg: true,
+      tags: ["Traditional", "South Indian", "Light"],
+      availability: true,
+      image: "https://images.unsplash.com/photo-1567620905732-2d1ec7ab7445?w=400&h=300&fit=crop"
     }
   ],
 
@@ -154,6 +226,71 @@ const mockData = {
         threshold: 3
       },
       progress: { completed: 1, total: 3 },
+      earned: false
+    },
+    {
+      id: 4,
+      areaId: "bangalore",
+      name: "Biryani Master",
+      description: "Try biryanis from 5 different places",
+      icon: "🍚",
+      criteria: {
+        requiredRestaurants: ["Biryani Blues", "Paradise Biryani", "Meghana Foods", "Nagarjuna", "Empire Restaurant"],
+        threshold: 5
+      },
+      progress: { completed: 2, total: 5 },
+      earned: false
+    },
+    {
+      id: 5,
+      areaId: "bangalore",
+      name: "Night Owl",
+      description: "Order food after 11 PM - 5 times",
+      icon: "🦉",
+      criteria: {
+        requiredRestaurants: [],
+        threshold: 5
+      },
+      progress: { completed: 3, total: 5 },
+      earned: false
+    },
+    {
+      id: 6,
+      areaId: "bangalore",
+      name: "Weekend Warrior",
+      description: "Order food every weekend for a month",
+      icon: "🏅",
+      criteria: {
+        requiredRestaurants: [],
+        threshold: 8
+      },
+      progress: { completed: 6, total: 8 },
+      earned: false
+    },
+    {
+      id: 7,
+      areaId: "bangalore",
+      name: "Spice Lover",
+      description: "Order spicy dishes 10 times",
+      icon: "🌶️",
+      criteria: {
+        requiredRestaurants: [],
+        threshold: 10
+      },
+      progress: { completed: 7, total: 10 },
+      earned: false
+    },
+    {
+      id: 8,
+      areaId: "koramangala",
+      name: "Dessert Specialist",
+      description: "Try desserts from 3 places in Koramangala",
+      icon: "🍰",
+      criteria: {
+        requiredRestaurants: ["Corner House", "Naturals", "Baskin Robbins"],
+        threshold: 3
+      },
+      progress: { completed: 0, total: 3 },
       earned: false
     }
   ],
