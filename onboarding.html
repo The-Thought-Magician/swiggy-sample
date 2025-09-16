@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Swiggy Companion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            text-align: center;
+            padding: 24px;
+            background: white;
+            border-bottom: 1px solid #eee;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 700;
+            color: #ff6b35;
+        }
+
+        .progress-container {
+            padding: 16px 24px;
+            background: #f8f9fa;
+            border-bottom: 1px solid #eee;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            height: 4px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #ff6b35, #f7931e);
+            height: 100%;
+            transition: width 0.3s ease;
+            border-radius: 2px;
+        }
+
+        .step-info {
+            margin-top: 12px;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+
+        .main-content {
+            padding: 32px 24px;
+            min-height: calc(100vh - 200px);
+        }
+
+        .step {
+            display: none;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .step.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .step-title {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .step-subtitle {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 32px;
+            line-height: 1.5;
+        }
+
+        .cuisine-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .cuisine-card {
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background: white;
+        }
+
+        .cuisine-card:hover {
+            border-color: #ff6b35;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.15);
+        }
+
+        .cuisine-card.selected {
+            border-color: #ff6b35;
+            background: #fff5f2;
+        }
+
+        .cuisine-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .cuisine-name {
+            font-weight: 500;
+            font-size: 14px;
+            color: #333;
+        }
+
+        .dietary-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 32px;
+        }
+
+        .dietary-chip {
+            padding: 12px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 14px;
+            font-weight: 500;
+            background: white;
+        }
+
+        .dietary-chip:hover {
+            border-color: #ff6b35;
+        }
+
+        .dietary-chip.selected {
+            border-color: #ff6b35;
+            background: #ff6b35;
+            color: white;
+        }
+
+        .slider-container {
+            margin-bottom: 32px;
+        }
+
+        .slider-label {
+            font-weight: 500;
+            margin-bottom: 16px;
+            color: #333;
+        }
+
+        .slider {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #e9ecef;
+            outline: none;
+            -webkit-appearance: none;
+            margin-bottom: 12px;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ff6b35;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(255, 107, 53, 0.3);
+        }
+
+        .slider::-moz-range-thumb {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: #ff6b35;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 6px rgba(255, 107, 53, 0.3);
+        }
+
+        .slider-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 420px;
+            padding: 24px;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .btn {
+            padding: 14px 24px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #e9ecef;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #ff6b35, #f7931e);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .welcome-content {
+            text-align: center;
+        }
+
+        .welcome-icon {
+            font-size: 64px;
+            margin-bottom: 24px;
+        }
+
+        .location-permission {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+            text-align: center;
+        }
+
+        .location-icon {
+            font-size: 32px;
+            margin-bottom: 12px;
+        }
+
+        .budget-display {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: center;
+            font-weight: 600;
+            color: #ff6b35;
+            margin-top: 12px;
+        }
+
+        .skip-btn {
+            background: none;
+            border: none;
+            color: #666;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 16px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                max-width: 100%;
+            }
+
+            .cuisine-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .navigation {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🍽️ Swiggy Companion</div>
+        </div>
+
+        <div class="progress-container">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="step-info" id="stepInfo">Step 1 of 4</div>
+        </div>
+
+        <div class="main-content">
+            <!-- Step 1: Welcome -->
+            <div class="step active" id="step1">
+                <div class="welcome-content">
+                    <div class="welcome-icon">🎉</div>
+                    <div class="step-title">Welcome to Swiggy Companion!</div>
+                    <div class="step-subtitle">Your AI-powered food discovery assistant. Let's set up your taste profile to give you the best recommendations.</div>
+
+                    <div class="location-permission">
+                        <div class="location-icon">📍</div>
+                        <div style="font-weight: 600; margin-bottom: 8px;">Enable Location</div>
+                        <div style="font-size: 14px; color: #666;">We'll use your location to find restaurants nearby and track your area exploration progress.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Cuisine Preferences -->
+            <div class="step" id="step2">
+                <div class="step-title">What cuisines do you love?</div>
+                <div class="step-subtitle">Select your favorite types of food. Don't worry, you can always change this later!</div>
+
+                <div class="cuisine-grid">
+                    <div class="cuisine-card" data-cuisine="north-indian">
+                        <div class="cuisine-icon">🍛</div>
+                        <div class="cuisine-name">North Indian</div>
+                    </div>
+                    <div class="cuisine-card" data-cuisine="south-indian">
+                        <div class="cuisine-icon">🥘</div>
+                        <div class="cuisine-name">South Indian</div>
+                    </div>
+                    <div class="cuisine-card" data-cuisine="chinese">
+                        <div class="cuisine-icon">🥡</div>
+                        <div class="cuisine-name">Chinese</div>
+                    </div>
+                    <div class="cuisine-card" data-cuisine="italian">
+                        <div class="cuisine-icon">🍝</div>
+                        <div class="cuisine-name">Italian</div>
+                    </div>
+                    <div class="cuisine-card" data-cuisine="continental">
+                        <div class="cuisine-icon">🍽️</div>
+                        <div class="cuisine-name">Continental</div>
+                    </div>
+                    <div class="cuisine-card" data-cuisine="desserts">
+                        <div class="cuisine-icon">🍰</div>
+                        <div class="cuisine-name">Desserts</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Dietary Preferences -->
+            <div class="step" id="step3">
+                <div class="step-title">Any dietary preferences?</div>
+                <div class="step-subtitle">Help us filter options that match your lifestyle and dietary needs.</div>
+
+                <div class="dietary-options">
+                    <div class="dietary-chip" data-dietary="vegetarian">🥗 Vegetarian</div>
+                    <div class="dietary-chip" data-dietary="vegan">🌱 Vegan</div>
+                    <div class="dietary-chip" data-dietary="non-veg">🍖 Non-Vegetarian</div>
+                    <div class="dietary-chip" data-dietary="gluten-free">🌾 Gluten-Free</div>
+                    <div class="dietary-chip" data-dietary="dairy-free">🥛 Dairy-Free</div>
+                    <div class="dietary-chip" data-dietary="keto">🥑 Keto</div>
+                </div>
+
+                <button class="skip-btn" onclick="skipDietary()">Skip this step</button>
+            </div>
+
+            <!-- Step 4: Taste Profile -->
+            <div class="step" id="step4">
+                <div class="step-title">Tell us about your taste!</div>
+                <div class="step-subtitle">This helps us understand your preferences better.</div>
+
+                <div class="slider-container">
+                    <div class="slider-label">How spicy do you like your food?</div>
+                    <input type="range" min="0" max="5" value="2" class="slider" id="spiceSlider">
+                    <div class="slider-labels">
+                        <span>Mild</span>
+                        <span>Medium</span>
+                        <span>Very Spicy</span>
+                    </div>
+                </div>
+
+                <div class="slider-container">
+                    <div class="slider-label">Typical budget per meal</div>
+                    <input type="range" min="50" max="1000" value="300" class="slider" id="budgetSlider">
+                    <div class="budget-display" id="budgetDisplay">₹300</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navigation">
+            <button class="btn btn-secondary" id="backBtn" onclick="goBack()" style="display: none;">Back</button>
+            <button class="btn btn-primary" id="continueBtn" onclick="goNext()">Continue</button>
+        </div>
+    </div>
+
+    <script src="mock-data.js"></script>
+    <script>
+        let currentStep = 1;
+        const totalSteps = 4;
+        let selectedCuisines = [];
+        let selectedDietary = [];
+        let spiceLevel = 2;
+        let budget = 300;
+
+        function updateProgress() {
+            const progressPercent = (currentStep / totalSteps) * 100;
+            document.getElementById('progressFill').style.width = progressPercent + '%';
+            document.getElementById('stepInfo').textContent = `Step ${currentStep} of ${totalSteps}`;
+        }
+
+        function showStep(step) {
+            // Hide all steps
+            document.querySelectorAll('.step').forEach(s => s.classList.remove('active'));
+
+            // Show current step
+            document.getElementById('step' + step).classList.add('active');
+
+            // Update navigation
+            document.getElementById('backBtn').style.display = step > 1 ? 'block' : 'none';
+
+            const continueBtn = document.getElementById('continueBtn');
+            if (step === totalSteps) {
+                continueBtn.textContent = 'Get Started!';
+            } else {
+                continueBtn.textContent = 'Continue';
+            }
+
+            updateProgress();
+        }
+
+        function goNext() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                showStep(currentStep);
+            } else {
+                // Save preferences and navigate to dashboard
+                savePreferences();
+                window.location.href = 'dashboard.html';
+            }
+        }
+
+        function goBack() {
+            if (currentStep > 1) {
+                currentStep--;
+                showStep(currentStep);
+            }
+        }
+
+        function savePreferences() {
+            const preferences = {
+                cuisines: selectedCuisines,
+                dietary: selectedDietary,
+                spiceLevel: spiceLevel,
+                budget: budget,
+                onboardingCompleted: true
+            };
+
+            localStorage.setItem('userPreferences', JSON.stringify(preferences));
+            console.log('Preferences saved:', preferences);
+        }
+
+        function skipDietary() {
+            selectedDietary = [];
+            goNext();
+        }
+
+        // Cuisine selection
+        document.querySelectorAll('.cuisine-card').forEach(card => {
+            card.addEventListener('click', function() {
+                const cuisine = this.dataset.cuisine;
+
+                if (this.classList.contains('selected')) {
+                    this.classList.remove('selected');
+                    selectedCuisines = selectedCuisines.filter(c => c !== cuisine);
+                } else {
+                    this.classList.add('selected');
+                    selectedCuisines.push(cuisine);
+                }
+
+                console.log('Selected cuisines:', selectedCuisines);
+            });
+        });
+
+        // Dietary selection
+        document.querySelectorAll('.dietary-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                const dietary = this.dataset.dietary;
+
+                if (this.classList.contains('selected')) {
+                    this.classList.remove('selected');
+                    selectedDietary = selectedDietary.filter(d => d !== dietary);
+                } else {
+                    this.classList.add('selected');
+                    selectedDietary.push(dietary);
+                }
+
+                console.log('Selected dietary:', selectedDietary);
+            });
+        });
+
+        // Spice level slider
+        document.getElementById('spiceSlider').addEventListener('input', function() {
+            spiceLevel = parseInt(this.value);
+        });
+
+        // Budget slider
+        document.getElementById('budgetSlider').addEventListener('input', function() {
+            budget = parseInt(this.value);
+            document.getElementById('budgetDisplay').textContent = '₹' + budget;
+        });
+
+        // Initialize
+        updateProgress();
+
+        // Enable location permission simulation
+        function enableLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        console.log('Location enabled:', position.coords);
+                        localStorage.setItem('locationEnabled', 'true');
+                    },
+                    (error) => {
+                        console.log('Location permission denied');
+                        // Continue anyway
+                    }
+                );
+            }
+        }
+
+        // Auto-enable location on page load
+        enableLocation();
+    </script>
+</body>
+</html>

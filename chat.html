@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Assistant - Swiggy Companion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+            background: white;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+
+        .chat-header {
+            background: white;
+            padding: 16px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: #f8f9fa;
+        }
+
+        .header-content {
+            flex: 1;
+        }
+
+        .ai-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 2px;
+        }
+
+        .ai-status {
+            font-size: 12px;
+            color: #28a745;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            background: #28a745;
+            border-radius: 50%;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.2s ease;
+        }
+
+        .menu-btn:hover {
+            background: #f8f9fa;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .message {
+            max-width: 80%;
+            animation: fadeInUp 0.3s ease;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message.user {
+            align-self: flex-end;
+        }
+
+        .message.ai {
+            align-self: flex-start;
+        }
+
+        .message-bubble {
+            padding: 12px 16px;
+            border-radius: 18px;
+            font-size: 16px;
+            line-height: 1.4;
+        }
+
+        .message.user .message-bubble {
+            background: #ff6b35;
+            color: white;
+            border-bottom-right-radius: 6px;
+        }
+
+        .message.ai .message-bubble {
+            background: #f8f9fa;
+            color: #333;
+            border-bottom-left-radius: 6px;
+        }
+
+        .message-timestamp {
+            font-size: 12px;
+            color: #666;
+            margin-top: 4px;
+            text-align: center;
+        }
+
+        .recommendation-card {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 8px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .rec-card-image {
+            width: 100%;
+            height: 120px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .rec-card-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(255, 107, 53, 0.9);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .rec-card-content {
+            padding: 16px;
+        }
+
+        .rec-card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .rec-card-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .rec-card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+
+        .rec-card-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ff6b35;
+        }
+
+        .rec-card-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .rec-card-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .rec-action-btn {
+            flex: 1;
+            padding: 8px 16px;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            background: white;
+            color: #666;
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .rec-action-btn.primary {
+            background: #ff6b35;
+            color: white;
+            border-color: #ff6b35;
+        }
+
+        .rec-action-btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .quick-actions {
+            padding: 16px 20px;
+            border-top: 1px solid #eee;
+            background: white;
+        }
+
+        .quick-actions-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .quick-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .quick-chip {
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quick-chip:hover {
+            border-color: #ff6b35;
+            background: #fff5f2;
+        }
+
+        .input-area {
+            padding: 16px 20px;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 12px 16px;
+            border: 1px solid #e9ecef;
+            border-radius: 24px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .message-input:focus {
+            border-color: #ff6b35;
+        }
+
+        .input-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: none;
+            background: #ff6b35;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 18px;
+        }
+
+        .input-btn:hover {
+            background: #e55a2b;
+            transform: scale(1.05);
+        }
+
+        .input-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .voice-btn {
+            background: #f8f9fa;
+            color: #666;
+        }
+
+        .voice-btn:hover {
+            background: #e9ecef;
+        }
+
+        .voice-btn.recording {
+            background: #dc3545;
+            color: white;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .typing-indicator {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #f8f9fa;
+            border-radius: 18px;
+            max-width: 80px;
+            margin-bottom: 16px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background: #666;
+            border-radius: 50%;
+            animation: typing 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+
+        @keyframes typing {
+            0%, 80%, 100% { transform: scale(0.8); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        .welcome-message {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .welcome-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+        }
+
+        .welcome-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .welcome-desc {
+            font-size: 16px;
+            line-height: 1.5;
+        }
+
+        .suggested-questions {
+            margin-top: 24px;
+        }
+
+        .suggested-question {
+            background: white;
+            border: 1px solid #e9ecef;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 12px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .suggested-question:hover {
+            border-color: #ff6b35;
+            background: #fff5f2;
+        }
+
+        .suggested-question-text {
+            font-size: 14px;
+            color: #333;
+        }
+
+        @media (max-width: 480px) {
+            .container { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="chat-header">
+            <button class="back-btn" onclick="goBack()">←</button>
+            <div class="header-content">
+                <div class="ai-title">AI Food Assistant</div>
+                <div class="ai-status">
+                    <span class="status-dot"></span>
+                    Online
+                </div>
+            </div>
+            <button class="menu-btn" onclick="showMenu()">⋮</button>
+        </div>
+
+        <div class="chat-messages" id="chatMessages">
+            <div class="welcome-message" id="welcomeMessage">
+                <div class="welcome-icon">🤖</div>
+                <div class="welcome-title">Hi! I'm your AI Food Assistant</div>
+                <div class="welcome-desc">I can help you discover amazing food, find restaurants, and answer any questions about your cravings!</div>
+
+                <div class="suggested-questions">
+                    <div class="suggested-question" onclick="sendSuggestedMessage('Show me spicy biryani under ₹400')">
+                        <div class="suggested-question-text">🍛 Show me spicy biryani under ₹400</div>
+                    </div>
+                    <div class="suggested-question" onclick="sendSuggestedMessage('What are some healthy meal options?')">
+                        <div class="suggested-question-text">🥗 What are some healthy meal options?</div>
+                    </div>
+                    <div class="suggested-question" onclick="sendSuggestedMessage('Find top-rated restaurants nearby')">
+                        <div class="suggested-question-text">⭐ Find top-rated restaurants nearby</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="typing-indicator" id="typingIndicator">
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+                <div class="typing-dot"></div>
+            </div>
+        </div>
+
+        <div class="quick-actions" id="quickActions" style="display: none;">
+            <div class="quick-actions-title">Quick actions:</div>
+            <div class="quick-chips">
+                <div class="quick-chip" onclick="sendSuggestedMessage('Show more like this')">More like this</div>
+                <div class="quick-chip" onclick="sendSuggestedMessage('Cheaper options')">Cheaper</div>
+                <div class="quick-chip" onclick="sendSuggestedMessage('Healthier choices')">Healthier</div>
+                <div class="quick-chip" onclick="sendSuggestedMessage('Show full menu')">Full Menu</div>
+            </div>
+        </div>
+
+        <div class="input-area">
+            <input type="text"
+                   class="message-input"
+                   id="messageInput"
+                   placeholder="Ask me anything about food..."
+                   onkeypress="handleKeyPress(event)">
+            <button class="input-btn voice-btn" id="voiceBtn" onclick="toggleVoice()">🎤</button>
+            <button class="input-btn" id="sendBtn" onclick="sendMessage()">➤</button>
+        </div>
+    </div>
+
+    <script src="mock-data.js"></script>
+    <script>
+        let messages = [];
+        let isTyping = false;
+        let isRecording = false;
+
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendBtn = document.getElementById('sendBtn');
+        const voiceBtn = document.getElementById('voiceBtn');
+        const typingIndicator = document.getElementById('typingIndicator');
+        const welcomeMessage = document.getElementById('welcomeMessage');
+        const quickActions = document.getElementById('quickActions');
+
+        function goBack() {
+            window.location.href = 'dashboard.html';
+        }
+
+        function showMenu() {
+            // In a real app, this would show chat options
+            alert('Chat options would appear here');
+        }
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        function sendMessage() {
+            const text = messageInput.value.trim();
+            if (!text || isTyping) return;
+
+            sendUserMessage(text);
+            messageInput.value = '';
+
+            // Simulate AI response
+            setTimeout(() => {
+                generateAIResponse(text);
+            }, 1000);
+        }
+
+        function sendSuggestedMessage(text) {
+            sendUserMessage(text);
+            setTimeout(() => {
+                generateAIResponse(text);
+            }, 1000);
+        }
+
+        function sendUserMessage(text) {
+            hideWelcome();
+
+            const message = {
+                id: Date.now(),
+                type: 'user',
+                content: text,
+                timestamp: new Date()
+            };
+
+            messages.push(message);
+            renderMessage(message);
+            scrollToBottom();
+        }
+
+        function hideWelcome() {
+            if (welcomeMessage.style.display !== 'none') {
+                welcomeMessage.style.display = 'none';
+            }
+        }
+
+        function showTyping() {
+            isTyping = true;
+            typingIndicator.style.display = 'flex';
+            scrollToBottom();
+        }
+
+        function hideTyping() {
+            isTyping = false;
+            typingIndicator.style.display = 'none';
+        }
+
+        function generateAIResponse(userMessage) {
+            showTyping();
+
+            setTimeout(() => {
+                hideTyping();
+
+                let aiResponse;
+                let recommendations = [];
+
+                // Simple keyword-based responses
+                const lowerMessage = userMessage.toLowerCase();
+
+                if (lowerMessage.includes('biryani') || lowerMessage.includes('spicy')) {
+                    aiResponse = "I found some amazing spicy biryani options for you! Here are my top recommendations:";
+                    recommendations = [1, 4]; // Biryani dishes
+                } else if (lowerMessage.includes('healthy') || lowerMessage.includes('salad')) {
+                    aiResponse = "Here are some healthy and nutritious options that align with your preferences:";
+                    recommendations = [2]; // Healthy dishes
+                } else if (lowerMessage.includes('restaurant') || lowerMessage.includes('top rated')) {
+                    aiResponse = "Here are the top-rated restaurants in your area:";
+                    recommendations = mockAPI.getRestaurants().slice(0, 2);
+                } else if (lowerMessage.includes('more like this') || lowerMessage.includes('similar')) {
+                    aiResponse = "Based on your preferences, here are some similar options:";
+                    recommendations = [2, 3];
+                } else if (lowerMessage.includes('cheap') || lowerMessage.includes('budget')) {
+                    aiResponse = "Here are some budget-friendly options under ₹200:";
+                    recommendations = [3]; // Cheaper dishes
+                } else {
+                    aiResponse = "I'd love to help you find something delicious! Here are some popular options:";
+                    recommendations = [1, 2];
+                }
+
+                const message = {
+                    id: Date.now(),
+                    type: 'ai',
+                    content: aiResponse,
+                    timestamp: new Date(),
+                    recommendations: recommendations
+                };
+
+                messages.push(message);
+                renderMessage(message);
+                showQuickActions();
+                scrollToBottom();
+            }, 1500);
+        }
+
+        function renderMessage(message) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${message.type}`;
+
+            const timestamp = message.timestamp.toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            let content = `
+                <div class="message-bubble">${message.content}</div>
+                <div class="message-timestamp">${timestamp}</div>
+            `;
+
+            // Add recommendations if present
+            if (message.recommendations && message.recommendations.length > 0) {
+                content += '<div style="margin-top: 12px;">';
+
+                message.recommendations.forEach(recId => {
+                    if (typeof recId === 'number') {
+                        // It's a dish ID
+                        const dish = mockAPI.getDishById(recId);
+                        if (dish) {
+                            const restaurant = mockAPI.getRestaurantById(dish.restaurantId);
+                            content += renderRecommendationCard(dish, restaurant, 'dish');
+                        }
+                    } else {
+                        // It's a restaurant object
+                        content += renderRecommendationCard(recId, null, 'restaurant');
+                    }
+                });
+
+                content += '</div>';
+            }
+
+            messageDiv.innerHTML = content;
+            chatMessages.appendChild(messageDiv);
+        }
+
+        function renderRecommendationCard(item, restaurant, type) {
+            if (type === 'dish') {
+                return `
+                    <div class="recommendation-card" onclick="viewDish(${item.id})">
+                        <div class="rec-card-image" style="background-image: url('${item.image}')">
+                            ${item.tags.includes('Bestseller') ? '<div class="rec-card-badge">Bestseller</div>' : ''}
+                        </div>
+                        <div class="rec-card-content">
+                            <div class="rec-card-title">${item.name}</div>
+                            <div class="rec-card-subtitle">${restaurant.name}</div>
+                            <div class="rec-card-meta">
+                                <div class="rec-card-price">₹${item.price}</div>
+                                <div class="rec-card-rating">⭐ ${item.rating}</div>
+                            </div>
+                            <div class="rec-card-actions">
+                                <button class="rec-action-btn" onclick="event.stopPropagation(); addToFavorites(${item.id})">❤️ Save</button>
+                                <button class="rec-action-btn primary" onclick="event.stopPropagation(); viewDish(${item.id})">View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                return `
+                    <div class="recommendation-card" onclick="viewRestaurant(${item.id})">
+                        <div class="rec-card-image" style="background-image: url('${item.image}')"></div>
+                        <div class="rec-card-content">
+                            <div class="rec-card-title">${item.name}</div>
+                            <div class="rec-card-subtitle">${item.cuisines.join(', ')}</div>
+                            <div class="rec-card-meta">
+                                <div class="rec-card-rating">⭐ ${item.rating}</div>
+                                <div style="font-size: 14px; color: #666;">${item.deliveryEta}</div>
+                            </div>
+                            <div class="rec-card-actions">
+                                <button class="rec-action-btn" onclick="event.stopPropagation(); addToFavorites(${item.id}, 'restaurant')">❤️ Save</button>
+                                <button class="rec-action-btn primary" onclick="event.stopPropagation(); viewRestaurant(${item.id})">View Menu</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        function showQuickActions() {
+            quickActions.style.display = 'block';
+        }
+
+        function scrollToBottom() {
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function toggleVoice() {
+            if (isRecording) {
+                stopRecording();
+            } else {
+                startRecording();
+            }
+        }
+
+        function startRecording() {
+            isRecording = true;
+            voiceBtn.classList.add('recording');
+            voiceBtn.innerHTML = '⏹️';
+
+            // Simulate voice recording
+            setTimeout(() => {
+                stopRecording();
+                messageInput.value = "Show me healthy breakfast options";
+            }, 3000);
+        }
+
+        function stopRecording() {
+            isRecording = false;
+            voiceBtn.classList.remove('recording');
+            voiceBtn.innerHTML = '🎤';
+        }
+
+        function viewDish(dishId) {
+            window.location.href = `dish-detail.html?id=${dishId}`;
+        }
+
+        function viewRestaurant(restaurantId) {
+            window.location.href = `restaurant-detail.html?id=${restaurantId}`;
+        }
+
+        function addToFavorites(id, type = 'dish') {
+            let favorites = JSON.parse(localStorage.getItem('favorites')) || { restaurants: [], dishes: [] };
+
+            if (type === 'dish') {
+                if (!favorites.dishes.includes(id)) {
+                    favorites.dishes.push(id);
+                }
+            } else {
+                if (!favorites.restaurants.includes(id)) {
+                    favorites.restaurants.push(id);
+                }
+            }
+
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+
+            // Show success message
+            const successMessage = {
+                id: Date.now(),
+                type: 'ai',
+                content: `Great! I've added that to your favorites. You can view all your saved items in the Favorites section.`,
+                timestamp: new Date()
+            };
+
+            messages.push(successMessage);
+            renderMessage(successMessage);
+            scrollToBottom();
+        }
+
+        // Load existing chat history if any
+        function loadChatHistory() {
+            const savedMessages = localStorage.getItem('chatMessages');
+            if (savedMessages) {
+                messages = JSON.parse(savedMessages);
+                if (messages.length > 0) {
+                    hideWelcome();
+                    messages.forEach(renderMessage);
+                    showQuickActions();
+                    scrollToBottom();
+                }
+            }
+        }
+
+        // Save messages to localStorage
+        function saveMessages() {
+            localStorage.setItem('chatMessages', JSON.stringify(messages));
+        }
+
+        // Clear chat history
+        function clearChat() {
+            if (confirm('Are you sure you want to clear the chat history?')) {
+                messages = [];
+                localStorage.removeItem('chatMessages');
+                chatMessages.innerHTML = '';
+                welcomeMessage.style.display = 'block';
+                quickActions.style.display = 'none';
+            }
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadChatHistory();
+
+            // Auto-save messages every 10 seconds
+            setInterval(saveMessages, 10000);
+        });
+
+        // Focus input on page load
+        window.addEventListener('load', () => {
+            messageInput.focus();
+        });
+    </script>
+</body>
+</html>

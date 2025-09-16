@@ -1,0 +1,907 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Favorites - Swiggy Companion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+
+        .page-header {
+            background: white;
+            padding: 16px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            transition: background 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: #f8f9fa;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .filter-btn {
+            background: none;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .filter-btn:hover {
+            border-color: #ff6b35;
+            background: #fff5f2;
+        }
+
+        .filter-tabs {
+            display: flex;
+            background: white;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .filter-tab {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            background: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .filter-tab.active {
+            color: #ff6b35;
+            border-bottom-color: #ff6b35;
+        }
+
+        .sort-bar {
+            background: #f8f9fa;
+            padding: 12px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sort-label {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .sort-select {
+            border: none;
+            background: none;
+            font-size: 14px;
+            color: #333;
+            font-weight: 600;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .content-area {
+            padding: 20px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .item-count {
+            font-size: 14px;
+            color: #666;
+            font-weight: 400;
+        }
+
+        .favorites-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+            margin-bottom: 32px;
+        }
+
+        .favorite-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .favorite-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .card-content {
+            display: flex;
+            padding: 16px;
+            gap: 16px;
+        }
+
+        .card-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            background-size: cover;
+            background-position: center;
+            flex-shrink: 0;
+        }
+
+        .card-info {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ff6b35;
+        }
+
+        .card-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s ease;
+            color: #dc3545;
+        }
+
+        .remove-btn:hover {
+            background: #dc3545;
+            color: white;
+            transform: scale(1.1);
+        }
+
+        .restaurant-card-content {
+            padding: 16px;
+        }
+
+        .restaurant-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .restaurant-cuisines {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 12px;
+        }
+
+        .restaurant-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 14px;
+        }
+
+        .restaurant-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .restaurant-eta {
+            color: #666;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #666;
+        }
+
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .empty-desc {
+            font-size: 16px;
+            line-height: 1.5;
+            margin-bottom: 24px;
+        }
+
+        .empty-action {
+            background: linear-gradient(90deg, #ff6b35, #f7931e);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .empty-action:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        .filter-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: flex-end;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .filter-modal.active {
+            display: flex;
+        }
+
+        .filter-content {
+            background: white;
+            border-radius: 16px 16px 0 0;
+            padding: 24px;
+            width: 100%;
+            max-width: 420px;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .filter-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .filter-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .filter-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+            padding: 4px;
+        }
+
+        .filter-group {
+            margin-bottom: 24px;
+        }
+
+        .filter-group-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .filter-options {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .filter-option {
+            padding: 8px 16px;
+            border: 1px solid #e9ecef;
+            border-radius: 20px;
+            background: white;
+            color: #666;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-option:hover {
+            border-color: #ff6b35;
+        }
+
+        .filter-option.active {
+            background: #ff6b35;
+            color: white;
+            border-color: #ff6b35;
+        }
+
+        .filter-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .filter-btn-secondary {
+            flex: 1;
+            padding: 14px;
+            border: 1px solid #e9ecef;
+            border-radius: 8px;
+            background: white;
+            color: #666;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .filter-btn-primary {
+            flex: 2;
+            padding: 14px;
+            border: none;
+            border-radius: 8px;
+            background: linear-gradient(90deg, #ff6b35, #f7931e);
+            color: white;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            padding: 16px 0;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            text-decoration: none;
+            color: #666;
+            transition: color 0.2s ease;
+        }
+
+        .nav-item.active {
+            color: #ff6b35;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .nav-label {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        @media (max-width: 480px) {
+            .container { max-width: 100%; }
+            .bottom-nav { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="page-header">
+            <div class="header-left">
+                <button class="back-btn" onclick="goBack()">←</button>
+                <h1 class="page-title">Favorites</h1>
+            </div>
+            <button class="filter-btn" onclick="showFilters()">
+                🔽 Filter
+            </button>
+        </div>
+
+        <div class="filter-tabs">
+            <button class="filter-tab active" onclick="switchTab('all')">All</button>
+            <button class="filter-tab" onclick="switchTab('restaurants')">Restaurants</button>
+            <button class="filter-tab" onclick="switchTab('dishes')">Dishes</button>
+        </div>
+
+        <div class="sort-bar">
+            <span class="sort-label">Sort by:</span>
+            <select class="sort-select" id="sortSelect" onchange="applySorting()">
+                <option value="recent">Recently Added</option>
+                <option value="rating">Highest Rated</option>
+                <option value="price-low">Price: Low to High</option>
+                <option value="price-high">Price: High to Low</option>
+                <option value="name">Name A-Z</option>
+            </select>
+        </div>
+
+        <div class="content-area">
+            <!-- All Favorites Section -->
+            <div class="tab-content" id="allContent">
+                <div id="favoritesContainer">
+                    <!-- Content will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Restaurants Section -->
+            <div class="tab-content" id="restaurantsContent" style="display: none;">
+                <div class="section-title">
+                    Favorite Restaurants
+                    <span class="item-count" id="restaurantCount">0 items</span>
+                </div>
+                <div class="favorites-grid" id="restaurantsGrid">
+                    <!-- Restaurant cards will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Dishes Section -->
+            <div class="tab-content" id="dishesContent" style="display: none;">
+                <div class="section-title">
+                    Favorite Dishes
+                    <span class="item-count" id="dishCount">0 items</span>
+                </div>
+                <div class="favorites-grid" id="dishesGrid">
+                    <!-- Dish cards will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state" id="emptyState" style="display: none;">
+                <div class="empty-icon">💔</div>
+                <div class="empty-title">No favorites yet</div>
+                <div class="empty-desc">Start exploring and add your favorite restaurants and dishes!</div>
+                <a href="dashboard.html" class="empty-action">Discover Food</a>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <a href="dashboard.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Home</span>
+            </a>
+            <a href="chat.html" class="nav-item">
+                <span class="nav-icon">💬</span>
+                <span class="nav-label">Chat</span>
+            </a>
+            <a href="favorites.html" class="nav-item active">
+                <span class="nav-icon">❤️</span>
+                <span class="nav-label">Favorites</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Profile</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Modal -->
+    <div class="filter-modal" id="filterModal">
+        <div class="filter-content">
+            <div class="filter-header">
+                <div class="filter-title">Filters</div>
+                <button class="filter-close" onclick="closeFilters()">×</button>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-group-title">Cuisine Type</div>
+                <div class="filter-options">
+                    <div class="filter-option" data-filter="cuisine" data-value="north-indian">North Indian</div>
+                    <div class="filter-option" data-filter="cuisine" data-value="south-indian">South Indian</div>
+                    <div class="filter-option" data-filter="cuisine" data-value="chinese">Chinese</div>
+                    <div class="filter-option" data-filter="cuisine" data-value="italian">Italian</div>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-group-title">Dietary</div>
+                <div class="filter-options">
+                    <div class="filter-option" data-filter="dietary" data-value="veg">Vegetarian</div>
+                    <div class="filter-option" data-filter="dietary" data-value="non-veg">Non-Vegetarian</div>
+                    <div class="filter-option" data-filter="dietary" data-value="vegan">Vegan</div>
+                </div>
+            </div>
+
+            <div class="filter-group">
+                <div class="filter-group-title">Price Range</div>
+                <div class="filter-options">
+                    <div class="filter-option" data-filter="price" data-value="0-200">Under ₹200</div>
+                    <div class="filter-option" data-filter="price" data-value="200-400">₹200 - ₹400</div>
+                    <div class="filter-option" data-filter="price" data-value="400+">Above ₹400</div>
+                </div>
+            </div>
+
+            <div class="filter-actions">
+                <button class="filter-btn-secondary" onclick="clearFilters()">Clear All</button>
+                <button class="filter-btn-primary" onclick="applyFilters()">Apply Filters</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="mock-data.js"></script>
+    <script>
+        let currentTab = 'all';
+        let currentSort = 'recent';
+        let activeFilters = {
+            cuisine: [],
+            dietary: [],
+            price: []
+        };
+        let favorites = { restaurants: [], dishes: [] };
+
+        function goBack() {
+            window.location.href = 'dashboard.html';
+        }
+
+        function switchTab(tab) {
+            currentTab = tab;
+
+            // Update tab buttons
+            document.querySelectorAll('.filter-tab').forEach(btn => btn.classList.remove('active'));
+            document.querySelector(`[onclick="switchTab('${tab}')"]`).classList.add('active');
+
+            // Update content visibility
+            document.querySelectorAll('.tab-content').forEach(content => content.style.display = 'none');
+            document.getElementById(tab + 'Content').style.display = 'block';
+
+            loadFavorites();
+        }
+
+        function applySorting() {
+            currentSort = document.getElementById('sortSelect').value;
+            loadFavorites();
+        }
+
+        function showFilters() {
+            document.getElementById('filterModal').classList.add('active');
+        }
+
+        function closeFilters() {
+            document.getElementById('filterModal').classList.remove('active');
+        }
+
+        function clearFilters() {
+            activeFilters = { cuisine: [], dietary: [], price: [] };
+            document.querySelectorAll('.filter-option').forEach(option => option.classList.remove('active'));
+            loadFavorites();
+        }
+
+        function applyFilters() {
+            loadFavorites();
+            closeFilters();
+        }
+
+        function loadFavorites() {
+            favorites = JSON.parse(localStorage.getItem('favorites')) || { restaurants: [], dishes: [] };
+
+            const favoriteRestaurants = favorites.restaurants.map(id => mockAPI.getRestaurantById(id)).filter(Boolean);
+            const favoriteDishes = favorites.dishes.map(id => mockAPI.getDishById(id)).filter(Boolean);
+
+            // Apply sorting
+            const sortedRestaurants = sortItems(favoriteRestaurants, 'restaurant');
+            const sortedDishes = sortItems(favoriteDishes, 'dish');
+
+            // Apply filters
+            const filteredRestaurants = filterItems(sortedRestaurants, 'restaurant');
+            const filteredDishes = filterItems(sortedDishes, 'dish');
+
+            // Update displays based on current tab
+            if (currentTab === 'all') {
+                displayAllFavorites(filteredRestaurants, filteredDishes);
+            } else if (currentTab === 'restaurants') {
+                displayRestaurants(filteredRestaurants);
+            } else if (currentTab === 'dishes') {
+                displayDishes(filteredDishes);
+            }
+
+            // Show empty state if no favorites
+            const hasAnyFavorites = favoriteRestaurants.length > 0 || favoriteDishes.length > 0;
+            document.getElementById('emptyState').style.display = hasAnyFavorites ? 'none' : 'block';
+        }
+
+        function sortItems(items, type) {
+            switch (currentSort) {
+                case 'rating':
+                    return items.sort((a, b) => b.rating - a.rating);
+                case 'price-low':
+                    if (type === 'dish') {
+                        return items.sort((a, b) => a.price - b.price);
+                    } else {
+                        return items.sort((a, b) => a.avgCost - b.avgCost);
+                    }
+                case 'price-high':
+                    if (type === 'dish') {
+                        return items.sort((a, b) => b.price - a.price);
+                    } else {
+                        return items.sort((a, b) => b.avgCost - a.avgCost);
+                    }
+                case 'name':
+                    return items.sort((a, b) => a.name.localeCompare(b.name));
+                case 'recent':
+                default:
+                    return items; // Keep original order (most recently added first)
+            }
+        }
+
+        function filterItems(items, type) {
+            return items.filter(item => {
+                // Cuisine filter
+                if (activeFilters.cuisine.length > 0) {
+                    const itemCuisines = type === 'restaurant' ? item.cuisines : [item.tags[0]];
+                    const hasMatchingCuisine = activeFilters.cuisine.some(filter =>
+                        itemCuisines.some(cuisine => cuisine.toLowerCase().includes(filter.replace('-', ' ')))
+                    );
+                    if (!hasMatchingCuisine) return false;
+                }
+
+                // Dietary filter
+                if (activeFilters.dietary.length > 0) {
+                    if (type === 'dish') {
+                        const isVeg = item.veg;
+                        if (activeFilters.dietary.includes('veg') && !isVeg) return false;
+                        if (activeFilters.dietary.includes('non-veg') && isVeg) return false;
+                    }
+                }
+
+                // Price filter
+                if (activeFilters.price.length > 0) {
+                    const price = type === 'dish' ? item.price : item.avgCost;
+                    const matchesPrice = activeFilters.price.some(range => {
+                        if (range === '0-200') return price <= 200;
+                        if (range === '200-400') return price >= 200 && price <= 400;
+                        if (range === '400+') return price > 400;
+                        return false;
+                    });
+                    if (!matchesPrice) return false;
+                }
+
+                return true;
+            });
+        }
+
+        function displayAllFavorites(restaurants, dishes) {
+            const container = document.getElementById('favoritesContainer');
+            let html = '';
+
+            if (restaurants.length > 0) {
+                html += `
+                    <div class="section-title">
+                        Favorite Restaurants
+                        <span class="item-count">${restaurants.length} items</span>
+                    </div>
+                    <div class="favorites-grid">
+                        ${restaurants.map(restaurant => renderRestaurantCard(restaurant)).join('')}
+                    </div>
+                `;
+            }
+
+            if (dishes.length > 0) {
+                html += `
+                    <div class="section-title" style="margin-top: ${restaurants.length > 0 ? '32px' : '0'};">
+                        Favorite Dishes
+                        <span class="item-count">${dishes.length} items</span>
+                    </div>
+                    <div class="favorites-grid">
+                        ${dishes.map(dish => renderDishCard(dish)).join('')}
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function displayRestaurants(restaurants) {
+            document.getElementById('restaurantCount').textContent = `${restaurants.length} items`;
+            document.getElementById('restaurantsGrid').innerHTML = restaurants.map(restaurant =>
+                renderRestaurantCard(restaurant)
+            ).join('');
+        }
+
+        function displayDishes(dishes) {
+            document.getElementById('dishCount').textContent = `${dishes.length} items`;
+            document.getElementById('dishesGrid').innerHTML = dishes.map(dish =>
+                renderDishCard(dish)
+            ).join('');
+        }
+
+        function renderRestaurantCard(restaurant) {
+            return `
+                <div class="favorite-card" onclick="viewRestaurant(${restaurant.id})">
+                    <button class="remove-btn" onclick="event.stopPropagation(); removeFavorite('restaurant', ${restaurant.id})">×</button>
+                    <div class="card-image" style="background-image: url('${restaurant.image}')"></div>
+                    <div class="restaurant-card-content">
+                        <div class="restaurant-name">${restaurant.name}</div>
+                        <div class="restaurant-cuisines">${restaurant.cuisines.join(' • ')}</div>
+                        <div class="restaurant-meta">
+                            <div class="restaurant-rating">⭐ ${restaurant.rating}</div>
+                            <div class="restaurant-eta">${restaurant.deliveryEta}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDishCard(dish) {
+            const restaurant = mockAPI.getRestaurantById(dish.restaurantId);
+            return `
+                <div class="favorite-card" onclick="viewDish(${dish.id})">
+                    <button class="remove-btn" onclick="event.stopPropagation(); removeFavorite('dish', ${dish.id})">×</button>
+                    <div class="card-content">
+                        <div class="card-image" style="background-image: url('${dish.image}')"></div>
+                        <div class="card-info">
+                            <div>
+                                <div class="card-title">${dish.name}</div>
+                                <div class="card-subtitle">${restaurant.name}</div>
+                            </div>
+                            <div class="card-meta">
+                                <div class="card-price">₹${dish.price}</div>
+                                <div class="card-rating">⭐ ${dish.rating}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function removeFavorite(type, id) {
+            if (confirm(`Remove this ${type} from favorites?`)) {
+                if (type === 'restaurant') {
+                    const index = favorites.restaurants.indexOf(id);
+                    if (index > -1) favorites.restaurants.splice(index, 1);
+                } else {
+                    const index = favorites.dishes.indexOf(id);
+                    if (index > -1) favorites.dishes.splice(index, 1);
+                }
+
+                localStorage.setItem('favorites', JSON.stringify(favorites));
+                loadFavorites();
+            }
+        }
+
+        function viewRestaurant(id) {
+            window.location.href = `restaurant-detail.html?id=${id}`;
+        }
+
+        function viewDish(id) {
+            window.location.href = `dish-detail.html?id=${id}`;
+        }
+
+        // Filter option click handlers
+        document.querySelectorAll('.filter-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const filterType = this.dataset.filter;
+                const filterValue = this.dataset.value;
+
+                this.classList.toggle('active');
+
+                if (this.classList.contains('active')) {
+                    if (!activeFilters[filterType].includes(filterValue)) {
+                        activeFilters[filterType].push(filterValue);
+                    }
+                } else {
+                    const index = activeFilters[filterType].indexOf(filterValue);
+                    if (index > -1) {
+                        activeFilters[filterType].splice(index, 1);
+                    }
+                }
+            });
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('filterModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeFilters();
+            }
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', loadFavorites);
+    </script>
+</body>
+</html>

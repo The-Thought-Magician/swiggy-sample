@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dish Details - Swiggy Companion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            padding-bottom: 100px;
+        }
+
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+
+        .hero-section {
+            position: relative;
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: flex-end;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+        }
+
+        .hero-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0,0,0,0.6));
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            padding: 20px;
+            color: white;
+            width: 100%;
+        }
+
+        .hero-actions {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            justify-content: space-between;
+            z-index: 3;
+        }
+
+        .back-btn, .favorite-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover, .favorite-btn:hover {
+            background: white;
+            transform: scale(1.05);
+        }
+
+        .favorite-btn.active {
+            color: #ff6b35;
+        }
+
+        .dish-title {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+
+        .restaurant-name {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 12px;
+        }
+
+        .hero-meta {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .price {
+            font-size: 20px;
+            font-weight: 700;
+            color: #fff;
+        }
+
+        .rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 8px;
+            border-radius: 12px;
+        }
+
+        .tags-container {
+            padding: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .tag {
+            padding: 6px 12px;
+            background: #fff5f2;
+            color: #ff6b35;
+            border: 1px solid #ffe0d6;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .tag.veg {
+            background: #f0f8f0;
+            color: #28a745;
+            border-color: #d4edda;
+        }
+
+        .tag.spicy {
+            background: #fff3cd;
+            color: #856404;
+            border-color: #ffeaa7;
+        }
+
+        .tab-navigation {
+            display: flex;
+            background: white;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            background: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            color: #ff6b35;
+            border-bottom-color: #ff6b35;
+        }
+
+        .tab-content {
+            padding: 20px;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .description {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 24px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 8px;
+        }
+
+        .info-label {
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .info-value {
+            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .ingredients {
+            margin-bottom: 24px;
+        }
+
+        .ingredients-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 12px;
+            color: #333;
+        }
+
+        .ingredients-list {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #666;
+        }
+
+        .reviews-section {
+            margin-bottom: 24px;
+        }
+
+        .reviews-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .reviews-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .reviews-summary {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .review-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .review-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .review-author {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .review-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .review-text {
+            font-size: 14px;
+            line-height: 1.5;
+            color: #666;
+        }
+
+        .related-section {
+            margin-bottom: 24px;
+        }
+
+        .related-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #333;
+        }
+
+        .related-items {
+            display: flex;
+            gap: 16px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .related-items::-webkit-scrollbar {
+            display: none;
+        }
+
+        .related-item {
+            min-width: 200px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .related-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .related-image {
+            width: 100%;
+            height: 120px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .related-content {
+            padding: 12px;
+        }
+
+        .related-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .related-price {
+            font-size: 14px;
+            color: #ff6b35;
+            font-weight: 600;
+        }
+
+        .action-buttons {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            padding: 20px;
+            border-top: 1px solid #eee;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border-radius: 8px;
+            border: none;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #666;
+            border: 1px solid #e9ecef;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+        }
+
+        .btn-primary {
+            background: linear-gradient(90deg, #ff6b35, #f7931e);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+        }
+
+        .menu-section {
+            margin-bottom: 24px;
+        }
+
+        .menu-category {
+            margin-bottom: 20px;
+        }
+
+        .category-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+            padding-bottom: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .menu-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .menu-item-info {
+            flex: 1;
+        }
+
+        .menu-item-name {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .menu-item-desc {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .menu-item-price {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ff6b35;
+            margin-left: 12px;
+        }
+
+        .availability-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #d4edda;
+            color: #155724;
+            font-size: 12px;
+            font-weight: 600;
+            border-radius: 4px;
+            margin-bottom: 8px;
+        }
+
+        .availability-badge.unavailable {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        @media (max-width: 480px) {
+            .container { max-width: 100%; }
+            .action-buttons { max-width: 100%; }
+            .info-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hero-section" id="heroSection">
+            <div class="hero-overlay"></div>
+            <div class="hero-actions">
+                <button class="back-btn" onclick="goBack()">←</button>
+                <button class="favorite-btn" id="favoriteBtn" onclick="toggleFavorite()">🤍</button>
+            </div>
+            <div class="hero-content">
+                <h1 class="dish-title" id="dishTitle">Loading...</h1>
+                <div class="restaurant-name" id="restaurantName">Loading...</div>
+                <div class="hero-meta">
+                    <div class="price" id="dishPrice">₹0</div>
+                    <div class="rating" id="dishRating">
+                        ⭐ 0.0
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tags-container">
+            <div class="tags" id="dishTags">
+                <!-- Tags will be populated by JavaScript -->
+            </div>
+        </div>
+
+        <div class="tab-navigation">
+            <button class="tab-btn active" onclick="switchTab('details')">Details</button>
+            <button class="tab-btn" onclick="switchTab('menu')">Menu</button>
+            <button class="tab-btn" onclick="switchTab('reviews')">Reviews</button>
+        </div>
+
+        <div class="tab-content">
+            <!-- Details Tab -->
+            <div class="tab-panel active" id="detailsTab">
+                <div class="availability-badge" id="availabilityBadge">Available Now</div>
+
+                <div class="description" id="dishDescription">
+                    Loading description...
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Preparation Time</div>
+                        <div class="info-value">15-20 mins</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Serves</div>
+                        <div class="info-value">1-2 people</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Cuisine Type</div>
+                        <div class="info-value" id="cuisineType">Indian</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Calories</div>
+                        <div class="info-value">350-400 kcal</div>
+                    </div>
+                </div>
+
+                <div class="ingredients">
+                    <div class="ingredients-title">Ingredients</div>
+                    <div class="ingredients-list" id="ingredientsList">
+                        Loading ingredients...
+                    </div>
+                </div>
+
+                <div class="related-section">
+                    <div class="related-title">Similar Dishes</div>
+                    <div class="related-items" id="relatedItems">
+                        <!-- Related items will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Menu Tab -->
+            <div class="tab-panel" id="menuTab">
+                <div class="menu-section" id="menuSection">
+                    <!-- Menu will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Reviews Tab -->
+            <div class="tab-panel" id="reviewsTab">
+                <div class="reviews-section">
+                    <div class="reviews-header">
+                        <div class="reviews-title">Customer Reviews</div>
+                        <div class="reviews-summary">
+                            ⭐ <span id="avgRating">4.5</span> • <span id="reviewCount">24</span> reviews
+                        </div>
+                    </div>
+                    <div id="reviewsList">
+                        <!-- Reviews will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-buttons">
+            <button class="btn btn-secondary" onclick="shareItem()">
+                📤 Share
+            </button>
+            <button class="btn btn-primary" onclick="orderNow()">
+                🛒 Order Now
+            </button>
+        </div>
+    </div>
+
+    <script src="mock-data.js"></script>
+    <script>
+        let currentDish = null;
+        let currentRestaurant = null;
+        let isFavorite = false;
+
+        function getDishIdFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return parseInt(urlParams.get('id'));
+        }
+
+        function goBack() {
+            window.history.back();
+        }
+
+        function switchTab(tabName) {
+            // Remove active class from all tabs and panels
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+
+            // Add active class to selected tab and panel
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+
+        function toggleFavorite() {
+            const favorites = JSON.parse(localStorage.getItem('favorites')) || { restaurants: [], dishes: [] };
+
+            if (isFavorite) {
+                const index = favorites.dishes.indexOf(currentDish.id);
+                if (index > -1) {
+                    favorites.dishes.splice(index, 1);
+                }
+                isFavorite = false;
+                document.getElementById('favoriteBtn').innerHTML = '🤍';
+            } else {
+                favorites.dishes.push(currentDish.id);
+                isFavorite = true;
+                document.getElementById('favoriteBtn').innerHTML = '❤️';
+            }
+
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+        }
+
+        function shareItem() {
+            if (navigator.share) {
+                navigator.share({
+                    title: currentDish.name,
+                    text: `Check out ${currentDish.name} from ${currentRestaurant.name}`,
+                    url: window.location.href
+                });
+            } else {
+                // Fallback to copying URL
+                navigator.clipboard.writeText(window.location.href);
+                alert('Link copied to clipboard!');
+            }
+        }
+
+        function orderNow() {
+            // In a real app, this would integrate with ordering system
+            alert(`Added ${currentDish.name} to cart! This would integrate with the ordering system.`);
+        }
+
+        function viewRelatedDish(dishId) {
+            window.location.href = `dish-detail.html?id=${dishId}`;
+        }
+
+        function loadDishDetails() {
+            const dishId = getDishIdFromURL();
+            if (!dishId) {
+                alert('Dish not found');
+                goBack();
+                return;
+            }
+
+            currentDish = mockAPI.getDishById(dishId);
+            if (!currentDish) {
+                alert('Dish not found');
+                goBack();
+                return;
+            }
+
+            currentRestaurant = mockAPI.getRestaurantById(currentDish.restaurantId);
+
+            // Check if dish is in favorites
+            const favorites = JSON.parse(localStorage.getItem('favorites')) || { restaurants: [], dishes: [] };
+            isFavorite = favorites.dishes.includes(currentDish.id);
+
+            // Populate hero section
+            document.getElementById('heroSection').style.backgroundImage = `url('${currentDish.image}')`;
+            document.getElementById('dishTitle').textContent = currentDish.name;
+            document.getElementById('restaurantName').textContent = currentRestaurant.name;
+            document.getElementById('dishPrice').textContent = `₹${currentDish.price}`;
+            document.getElementById('dishRating').innerHTML = `⭐ ${currentDish.rating}`;
+            document.getElementById('favoriteBtn').innerHTML = isFavorite ? '❤️' : '🤍';
+
+            // Populate tags
+            const tagsContainer = document.getElementById('dishTags');
+            tagsContainer.innerHTML = currentDish.tags.map(tag => {
+                let tagClass = 'tag';
+                if (tag.toLowerCase().includes('veg')) tagClass += ' veg';
+                if (tag.toLowerCase().includes('spicy')) tagClass += ' spicy';
+                return `<span class="${tagClass}">${tag}</span>`;
+            }).join('');
+
+            // Add veg/non-veg tag
+            if (currentDish.veg) {
+                tagsContainer.innerHTML += '<span class="tag veg">Vegetarian</span>';
+            }
+
+            // Populate details tab
+            document.getElementById('dishDescription').textContent = currentDish.description;
+            document.getElementById('cuisineType').textContent = currentRestaurant.cuisines[0];
+
+            const availabilityBadge = document.getElementById('availabilityBadge');
+            if (currentDish.availability) {
+                availabilityBadge.textContent = 'Available Now';
+                availabilityBadge.className = 'availability-badge';
+            } else {
+                availabilityBadge.textContent = 'Currently Unavailable';
+                availabilityBadge.className = 'availability-badge unavailable';
+            }
+
+            // Mock ingredients based on dish name
+            let ingredients = 'Ingredients information not available';
+            if (currentDish.name.toLowerCase().includes('biryani')) {
+                ingredients = 'Basmati rice, chicken/mutton, onions, yogurt, ginger-garlic paste, red chili powder, turmeric, garam masala, mint leaves, coriander leaves, ghee, saffron';
+            } else if (currentDish.name.toLowerCase().includes('dosa')) {
+                ingredients = 'Rice, urad dal, fenugreek seeds, potatoes, onions, green chilies, curry leaves, mustard seeds, turmeric, salt';
+            } else if (currentDish.name.toLowerCase().includes('bowl')) {
+                ingredients = 'Mixed greens, quinoa, feta cheese, cherry tomatoes, olives, cucumber, tahini dressing, olive oil';
+            }
+            document.getElementById('ingredientsList').textContent = ingredients;
+
+            // Load related items
+            loadRelatedItems();
+
+            // Load restaurant menu
+            loadRestaurantMenu();
+
+            // Load reviews
+            loadReviews();
+        }
+
+        function loadRelatedItems() {
+            const allDishes = mockAPI.getDishes();
+            const relatedDishes = allDishes.filter(dish =>
+                dish.id !== currentDish.id &&
+                (dish.restaurantId === currentDish.restaurantId ||
+                 dish.tags.some(tag => currentDish.tags.includes(tag)))
+            ).slice(0, 5);
+
+            const relatedContainer = document.getElementById('relatedItems');
+            relatedContainer.innerHTML = relatedDishes.map(dish => `
+                <div class="related-item" onclick="viewRelatedDish(${dish.id})">
+                    <div class="related-image" style="background-image: url('${dish.image}')"></div>
+                    <div class="related-content">
+                        <div class="related-name">${dish.name}</div>
+                        <div class="related-price">₹${dish.price}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function loadRestaurantMenu() {
+            const menuDishes = mockAPI.getDishesByRestaurant(currentRestaurant.id);
+
+            // Group dishes by category (mock categorization)
+            const categories = {
+                'Main Course': menuDishes.filter(dish => dish.price > 200),
+                'Appetizers': menuDishes.filter(dish => dish.price <= 200)
+            };
+
+            const menuContainer = document.getElementById('menuSection');
+            let menuHTML = '';
+
+            Object.keys(categories).forEach(category => {
+                if (categories[category].length > 0) {
+                    menuHTML += `
+                        <div class="menu-category">
+                            <div class="category-title">${category}</div>
+                            ${categories[category].map(dish => `
+                                <div class="menu-item" onclick="viewRelatedDish(${dish.id})">
+                                    <div class="menu-item-info">
+                                        <div class="menu-item-name">${dish.name}</div>
+                                        <div class="menu-item-desc">${dish.description.substring(0, 50)}...</div>
+                                    </div>
+                                    <div class="menu-item-price">₹${dish.price}</div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                }
+            });
+
+            menuContainer.innerHTML = menuHTML;
+        }
+
+        function loadReviews() {
+            const reviews = mockAPI.getReviews(currentRestaurant.id);
+
+            document.getElementById('avgRating').textContent = currentDish.rating;
+            document.getElementById('reviewCount').textContent = reviews.length;
+
+            const reviewsContainer = document.getElementById('reviewsList');
+            reviewsContainer.innerHTML = reviews.map(review => `
+                <div class="review-card">
+                    <div class="review-header">
+                        <div class="review-author">${review.author}</div>
+                        <div class="review-rating">⭐ ${review.rating}</div>
+                    </div>
+                    <div class="review-text">${review.excerpt}</div>
+                </div>
+            `).join('');
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', loadDishDetails);
+    </script>
+</body>
+</html>

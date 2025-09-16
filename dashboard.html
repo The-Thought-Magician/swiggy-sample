@@ -1,0 +1,768 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swiggy Companion - Discover</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+
+        .top-bar {
+            background: white;
+            padding: 16px 20px;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .location-selector {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .location-selector:hover {
+            background: #e9ecef;
+        }
+
+        .location-text {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .top-actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .icon-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 18px;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .icon-btn:hover {
+            background: #e9ecef;
+            transform: scale(1.05);
+        }
+
+        .search-header {
+            padding: 20px;
+            background: white;
+        }
+
+        .search-bar {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 16px 20px 16px 50px;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s ease;
+        }
+
+        .search-input:focus {
+            border-color: #ff6b35;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 18px;
+        }
+
+        .filter-chips {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            padding-bottom: 4px;
+        }
+
+        .filter-chips::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-chip {
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-chip:hover {
+            border-color: #ff6b35;
+        }
+
+        .filter-chip.active {
+            background: #ff6b35;
+            color: white;
+            border-color: #ff6b35;
+        }
+
+        .content-sections {
+            padding: 20px;
+        }
+
+        .section {
+            margin-bottom: 32px;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .section-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .view-all {
+            color: #ff6b35;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: none;
+        }
+
+        .cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+        }
+
+        .card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .dish-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .dish-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .card-image {
+            width: 100%;
+            height: 120px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .card-badge {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: rgba(255, 107, 53, 0.9);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .favorite-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s ease;
+        }
+
+        .favorite-btn:hover {
+            background: white;
+            transform: scale(1.1);
+        }
+
+        .favorite-btn.active {
+            color: #ff6b35;
+        }
+
+        .card-content {
+            padding: 16px;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        .card-subtitle {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .card-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-price {
+            font-size: 16px;
+            font-weight: 700;
+            color: #ff6b35;
+        }
+
+        .card-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .restaurant-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .restaurant-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .restaurant-image {
+            width: 100%;
+            height: 100px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .restaurant-content {
+            padding: 16px;
+        }
+
+        .restaurant-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .restaurant-cuisines {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .restaurant-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 12px;
+        }
+
+        .restaurant-rating {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .restaurant-eta {
+            color: #666;
+        }
+
+        .quick-actions {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            padding: 0 20px;
+            margin-bottom: 20px;
+        }
+
+        .quick-action {
+            min-width: 120px;
+            padding: 16px;
+            background: white;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            transition: all 0.2s ease;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .quick-action:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+        }
+
+        .quick-action-icon {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .quick-action-text {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .badge-teaser {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .badge-teaser:hover {
+            transform: translateY(-2px);
+        }
+
+        .badge-teaser-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .badge-teaser-icon {
+            font-size: 24px;
+        }
+
+        .badge-teaser-title {
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .badge-teaser-desc {
+            font-size: 14px;
+            margin-bottom: 12px;
+            opacity: 0.9;
+        }
+
+        .badge-progress {
+            background: rgba(255, 255, 255, 0.2);
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .badge-progress-fill {
+            background: white;
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            padding: 16px 0;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            text-decoration: none;
+            color: #666;
+            transition: color 0.2s ease;
+        }
+
+        .nav-item.active {
+            color: #ff6b35;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .nav-label {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .skeleton {
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: loading 1.5s infinite;
+            border-radius: 4px;
+        }
+
+        @keyframes loading {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        @media (max-width: 480px) {
+            .container { max-width: 100%; }
+            .cards-grid { grid-template-columns: 1fr; }
+            .bottom-nav { max-width: 100%; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="top-bar">
+            <div class="location-selector" onclick="showLocationModal()">
+                <span>📍</span>
+                <span class="location-text" id="currentLocation">Koramangala, Bangalore</span>
+                <span>▼</span>
+            </div>
+
+            <div class="top-actions">
+                <a href="profile.html" class="icon-btn">👤</a>
+                <a href="chat.html" class="icon-btn">💬</a>
+            </div>
+        </div>
+
+        <div class="search-header">
+            <div class="search-bar">
+                <span class="search-icon">🔍</span>
+                <input type="text"
+                       class="search-input"
+                       placeholder="Search for dishes, restaurants..."
+                       id="searchInput"
+                       onkeypress="handleSearch(event)">
+            </div>
+
+            <div class="filter-chips" id="filterChips">
+                <div class="filter-chip" data-filter="veg">🥗 Veg Only</div>
+                <div class="filter-chip" data-filter="budget">💰 Under ₹200</div>
+                <div class="filter-chip" data-filter="rating">⭐ High Rated</div>
+                <div class="filter-chip" data-filter="fast">⚡ Fast Delivery</div>
+                <div class="filter-chip" data-filter="offers">🏷️ Offers</div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <a href="chat.html" class="quick-action">
+                <div class="quick-action-icon">🤖</div>
+                <div class="quick-action-text">Ask AI</div>
+            </a>
+            <a href="favorites.html" class="quick-action">
+                <div class="quick-action-icon">❤️</div>
+                <div class="quick-action-text">Favorites</div>
+            </a>
+            <a href="profile.html" class="quick-action">
+                <div class="quick-action-icon">🏆</div>
+                <div class="quick-action-text">Badges</div>
+            </a>
+        </div>
+
+        <div class="content-sections">
+            <!-- Badge Progress Teaser -->
+            <div class="badge-teaser" onclick="window.location.href='profile.html'">
+                <div class="badge-teaser-header">
+                    <span class="badge-teaser-icon">🏆</span>
+                    <span class="badge-teaser-title">BTM Foodie Badge</span>
+                </div>
+                <div class="badge-teaser-desc">Try 2 more restaurants to unlock this badge!</div>
+                <div class="badge-progress">
+                    <div class="badge-progress-fill" style="width: 33%;"></div>
+                </div>
+            </div>
+
+            <!-- Personalized Recommendations -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Just For You</h2>
+                    <a href="#" class="view-all">View All</a>
+                </div>
+                <div class="cards-grid" id="personalizedCards">
+                    <!-- Cards will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Trending Near You -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">Trending Near You</h2>
+                    <a href="#" class="view-all">View All</a>
+                </div>
+                <div class="card-list" id="trendingCards">
+                    <!-- Cards will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- New Restaurants -->
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">New Restaurants</h2>
+                    <a href="#" class="view-all">View All</a>
+                </div>
+                <div class="cards-grid" id="newRestaurants">
+                    <!-- Cards will be populated by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <a href="dashboard.html" class="nav-item active">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Home</span>
+            </a>
+            <a href="chat.html" class="nav-item">
+                <span class="nav-icon">💬</span>
+                <span class="nav-label">Chat</span>
+            </a>
+            <a href="favorites.html" class="nav-item">
+                <span class="nav-icon">❤️</span>
+                <span class="nav-label">Favorites</span>
+            </a>
+            <a href="profile.html" class="nav-item">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Profile</span>
+            </a>
+        </div>
+    </div>
+
+    <script src="mock-data.js"></script>
+    <script>
+        let activeFilters = [];
+        let favorites = JSON.parse(localStorage.getItem('favorites')) || { restaurants: [], dishes: [] };
+
+        function renderDishCard(dish, restaurant) {
+            const isFavorite = favorites.dishes.includes(dish.id);
+
+            return `
+                <div class="dish-card" onclick="viewDish(${dish.id})">
+                    <div class="card-image" style="background-image: url('${dish.image}')">
+                        ${dish.tags.includes('Bestseller') ? '<div class="card-badge">Bestseller</div>' : ''}
+                        <button class="favorite-btn ${isFavorite ? 'active' : ''}"
+                                onclick="event.stopPropagation(); toggleFavorite('dish', ${dish.id})">
+                            ${isFavorite ? '❤️' : '🤍'}
+                        </button>
+                    </div>
+                    <div class="card-content">
+                        <div class="card-title">${dish.name}</div>
+                        <div class="card-subtitle">${restaurant.name}</div>
+                        <div class="card-meta">
+                            <div class="card-price">₹${dish.price}</div>
+                            <div class="card-rating">
+                                ⭐ ${dish.rating}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderRestaurantCard(restaurant) {
+            const isFavorite = favorites.restaurants.includes(restaurant.id);
+
+            return `
+                <div class="restaurant-card" onclick="viewRestaurant(${restaurant.id})">
+                    <div class="restaurant-image" style="background-image: url('${restaurant.image}')">
+                        <button class="favorite-btn ${isFavorite ? 'active' : ''}"
+                                onclick="event.stopPropagation(); toggleFavorite('restaurant', ${restaurant.id})">
+                            ${isFavorite ? '❤️' : '🤍'}
+                        </button>
+                    </div>
+                    <div class="restaurant-content">
+                        <div class="restaurant-name">${restaurant.name}</div>
+                        <div class="restaurant-cuisines">${restaurant.cuisines.join(', ')}</div>
+                        <div class="restaurant-meta">
+                            <div class="restaurant-rating">⭐ ${restaurant.rating}</div>
+                            <div class="restaurant-eta">${restaurant.deliveryEta}</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function loadDashboard() {
+            const restaurants = mockAPI.getRestaurants();
+            const dishes = mockAPI.getDishes();
+
+            // Personalized recommendations (dishes)
+            const personalizedContainer = document.getElementById('personalizedCards');
+            const personalizedDishes = dishes.slice(0, 4);
+
+            personalizedContainer.innerHTML = personalizedDishes.map(dish => {
+                const restaurant = restaurants.find(r => r.id === dish.restaurantId);
+                return renderDishCard(dish, restaurant);
+            }).join('');
+
+            // Trending dishes (as list)
+            const trendingContainer = document.getElementById('trendingCards');
+            const trendingDishes = dishes.slice(1, 4);
+
+            trendingContainer.innerHTML = trendingDishes.map(dish => {
+                const restaurant = restaurants.find(r => r.id === dish.restaurantId);
+                return renderDishCard(dish, restaurant);
+            }).join('');
+
+            // New restaurants
+            const newRestaurantsContainer = document.getElementById('newRestaurants');
+            newRestaurantsContainer.innerHTML = restaurants.slice(0, 2).map(restaurant =>
+                renderRestaurantCard(restaurant)
+            ).join('');
+        }
+
+        function toggleFavorite(type, id) {
+            if (type === 'dish') {
+                const index = favorites.dishes.indexOf(id);
+                if (index > -1) {
+                    favorites.dishes.splice(index, 1);
+                } else {
+                    favorites.dishes.push(id);
+                }
+            } else if (type === 'restaurant') {
+                const index = favorites.restaurants.indexOf(id);
+                if (index > -1) {
+                    favorites.restaurants.splice(index, 1);
+                } else {
+                    favorites.restaurants.push(id);
+                }
+            }
+
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            loadDashboard(); // Refresh to update heart icons
+        }
+
+        function viewDish(dishId) {
+            window.location.href = `dish-detail.html?id=${dishId}`;
+        }
+
+        function viewRestaurant(restaurantId) {
+            window.location.href = `restaurant-detail.html?id=${restaurantId}`;
+        }
+
+        function handleSearch(event) {
+            if (event.key === 'Enter') {
+                const query = event.target.value.trim();
+                if (query) {
+                    window.location.href = `search.html?q=${encodeURIComponent(query)}`;
+                }
+            }
+        }
+
+        function showLocationModal() {
+            // In a real app, this would show a location picker modal
+            alert('Location picker would open here');
+        }
+
+        // Filter chip functionality
+        document.querySelectorAll('.filter-chip').forEach(chip => {
+            chip.addEventListener('click', function() {
+                const filter = this.dataset.filter;
+
+                if (this.classList.contains('active')) {
+                    this.classList.remove('active');
+                    activeFilters = activeFilters.filter(f => f !== filter);
+                } else {
+                    this.classList.add('active');
+                    activeFilters.push(filter);
+                }
+
+                applyFilters();
+            });
+        });
+
+        function applyFilters() {
+            // In a real app, this would filter the displayed content
+            console.log('Active filters:', activeFilters);
+        }
+
+        // Load dashboard on page load
+        document.addEventListener('DOMContentLoaded', loadDashboard);
+
+        // Welcome message for first-time users
+        const hasOnboarded = localStorage.getItem('userPreferences');
+        if (!hasOnboarded) {
+            setTimeout(() => {
+                if (confirm('Welcome to Swiggy Companion! Would you like to set up your preferences for better recommendations?')) {
+                    window.location.href = 'onboarding.html';
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

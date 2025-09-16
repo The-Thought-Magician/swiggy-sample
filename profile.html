@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Swiggy Companion</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f8f9fa;
+            color: #333;
+            padding-bottom: 80px;
+        }
+
+        .container {
+            max-width: 420px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.05);
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            color: white;
+            padding: 40px 20px 20px;
+            text-align: center;
+        }
+
+        .back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.2s ease;
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background-size: cover;
+            background-position: center;
+            margin: 0 auto 16px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .profile-name {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .profile-location {
+            font-size: 16px;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            opacity: 0.9;
+            text-transform: uppercase;
+        }
+
+        .tab-navigation {
+            display: flex;
+            background: white;
+            border-bottom: 1px solid #eee;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            background: none;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            color: #ff6b35;
+            border-bottom-color: #ff6b35;
+        }
+
+        .tab-content {
+            padding: 20px;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .badges-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .badge-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            border: 2px solid #eee;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .badge-card.earned {
+            border-color: #ff6b35;
+            background: linear-gradient(135deg, #fff5f2 0%, #ffffff 100%);
+            transform: scale(1.02);
+        }
+
+        .badge-card.locked {
+            opacity: 0.6;
+            filter: grayscale(1);
+        }
+
+        .badge-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+        }
+
+        .badge-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+        }
+
+        .badge-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .badge-description {
+            font-size: 12px;
+            color: #666;
+            line-height: 1.4;
+            margin-bottom: 12px;
+        }
+
+        .progress-container {
+            margin-top: 12px;
+        }
+
+        .progress-bar {
+            background: #e9ecef;
+            height: 6px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 8px;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #ff6b35, #f7931e);
+            height: 100%;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 12px;
+            color: #666;
+            font-weight: 600;
+        }
+
+        .earned-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #28a745;
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+        }
+
+        .preferences-section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 16px;
+        }
+
+        .preference-group {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 16px;
+        }
+
+        .preference-label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .preference-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .preference-chip {
+            padding: 6px 12px;
+            background: #ff6b35;
+            color: white;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .preference-value {
+            font-size: 14px;
+            color: #666;
+            background: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        .settings-section {
+            margin-bottom: 24px;
+        }
+
+        .setting-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 0;
+            border-bottom: 1px solid #f8f9fa;
+        }
+
+        .setting-item:last-child {
+            border-bottom: none;
+        }
+
+        .setting-info {
+            flex: 1;
+        }
+
+        .setting-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .setting-desc {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .setting-action {
+            color: #ff6b35;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 28px;
+            border-radius: 14px;
+            background: #ccc;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .toggle-switch.active {
+            background: #ff6b35;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background: white;
+            transition: transform 0.2s ease;
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(20px);
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100%;
+            max-width: 420px;
+            background: white;
+            border-top: 1px solid #eee;
+            display: flex;
+            padding: 16px 0;
+        }
+
+        .nav-item {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px;
+            text-decoration: none;
+            color: #666;
+            transition: color 0.2s ease;
+        }
+
+        .nav-item.active {
+            color: #ff6b35;
+        }
+
+        .nav-icon {
+            font-size: 20px;
+        }
+
+        .nav-label {
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .badge-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .badge-modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            max-width: 350px;
+            width: 100%;
+            text-align: center;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #666;
+        }
+
+        .modal-badge-icon {
+            font-size: 64px;
+            margin-bottom: 16px;
+        }
+
+        .modal-badge-name {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        .modal-badge-desc {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 20px;
+        }
+
+        .modal-progress {
+            margin-bottom: 20px;
+        }
+
+        .modal-requirements {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 16px;
+            text-align: left;
+        }
+
+        .requirement-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .requirement-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .requirement-item.completed {
+            color: #28a745;
+        }
+
+        @media (max-width: 480px) {
+            .container { max-width: 100%; }
+            .bottom-nav { max-width: 100%; }
+            .badges-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="profile-header">
+            <button class="back-btn" onclick="goBack()">←</button>
+
+            <div class="profile-avatar" id="profileAvatar"></div>
+            <h1 class="profile-name" id="profileName">Loading...</h1>
+            <div class="profile-location">📍 Koramangala, Bangalore</div>
+
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="totalOrders">0</div>
+                    <div class="stat-label">Orders</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="favoritesCount">0</div>
+                    <div class="stat-label">Favorites</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="badgesEarned">0</div>
+                    <div class="stat-label">Badges</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-navigation">
+            <button class="tab-btn active" onclick="switchTab('badges')">Badges</button>
+            <button class="tab-btn" onclick="switchTab('preferences')">Preferences</button>
+            <button class="tab-btn" onclick="switchTab('settings')">Settings</button>
+        </div>
+
+        <div class="tab-content">
+            <!-- Badges Tab -->
+            <div class="tab-panel active" id="badgesTab">
+                <div class="section-title">Achievement Badges</div>
+                <div class="badges-grid" id="badgesGrid">
+                    <!-- Badges will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Preferences Tab -->
+            <div class="tab-panel" id="preferencesTab">
+                <div class="preferences-section">
+                    <div class="section-title">Food Preferences</div>
+
+                    <div class="preference-group">
+                        <div class="preference-label">Favorite Cuisines</div>
+                        <div class="preference-chips" id="cuisineChips">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="preference-group">
+                        <div class="preference-label">Dietary Preferences</div>
+                        <div class="preference-chips" id="dietaryChips">
+                            <!-- Will be populated by JavaScript -->
+                        </div>
+                    </div>
+
+                    <div class="preference-group">
+                        <div class="preference-label">Spice Level</div>
+                        <div class="preference-value" id="spiceLevel">Medium (3/5)</div>
+                    </div>
+
+                    <div class="preference-group">
+                        <div class="preference-label">Budget Range</div>
+                        <div class="preference-value" id="budgetRange">₹100 - ₹500</div>
+                    </div>
+                </div>
+
+                <button style="width: 100%; padding: 16px; background: #ff6b35; color: white; border: none; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer;" onclick="editPreferences()">
+                    Edit Preferences
+                </button>
+            </div>
+
+            <!-- Settings Tab -->
+            <div class="tab-panel" id="settingsTab">
+                <div class="settings-section">
+                    <div class="section-title">Account Settings</div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Notifications</div>
+                            <div class="setting-desc">Order updates and recommendations</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Location Access</div>
+                            <div class="setting-desc">For restaurant recommendations</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">AI Suggestions</div>
+                            <div class="setting-desc">Personalized food recommendations</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleSetting(this)"></div>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Data Export</div>
+                            <div class="setting-desc">Download your data</div>
+                        </div>
+                        <a href="#" class="setting-action" onclick="exportData()">Export</a>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Privacy Policy</div>
+                            <div class="setting-desc">Review our privacy terms</div>
+                        </div>
+                        <a href="#" class="setting-action">View</a>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-title">Clear Chat History</div>
+                            <div class="setting-desc">Remove all chat messages</div>
+                        </div>
+                        <a href="#" class="setting-action" onclick="clearChatHistory()">Clear</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="bottom-nav">
+            <a href="dashboard.html" class="nav-item">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-label">Home</span>
+            </a>
+            <a href="chat.html" class="nav-item">
+                <span class="nav-icon">💬</span>
+                <span class="nav-label">Chat</span>
+            </a>
+            <a href="favorites.html" class="nav-item">
+                <span class="nav-icon">❤️</span>
+                <span class="nav-label">Favorites</span>
+            </a>
+            <a href="profile.html" class="nav-item active">
+                <span class="nav-icon">👤</span>
+                <span class="nav-label">Profile</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Badge Detail Modal -->
+    <div class="badge-modal" id="badgeModal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeBadgeModal()">×</button>
+            <div class="modal-badge-icon" id="modalBadgeIcon">🏆</div>
+            <div class="modal-badge-name" id="modalBadgeName">Badge Name</div>
+            <div class="modal-badge-desc" id="modalBadgeDesc">Badge description</div>
+
+            <div class="modal-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="modalProgressFill"></div>
+                </div>
+                <div class="progress-text" id="modalProgressText">0/5 completed</div>
+            </div>
+
+            <div class="modal-requirements" id="modalRequirements">
+                <!-- Requirements will be populated by JavaScript -->
+            </div>
+        </div>
+    </div>
+
+    <script src="mock-data.js"></script>
+    <script>
+        let currentUser = null;
+
+        function goBack() {
+            window.location.href = 'dashboard.html';
+        }
+
+        function switchTab(tabName) {
+            // Remove active class from all tabs and panels
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.querySelectorAll('.tab-panel').forEach(panel => panel.classList.remove('active'));
+
+            // Add active class to selected tab and panel
+            document.querySelector(`[onclick="switchTab('${tabName}')"]`).classList.add('active');
+            document.getElementById(tabName + 'Tab').classList.add('active');
+        }
+
+        function toggleSetting(toggle) {
+            toggle.classList.toggle('active');
+        }
+
+        function loadUserProfile() {
+            currentUser = mockAPI.getUser();
+
+            // Populate profile header
+            document.getElementById('profileAvatar').style.backgroundImage = `url('${currentUser.avatar}')`;
+            document.getElementById('profileName').textContent = currentUser.name;
+
+            // Populate stats
+            document.getElementById('totalOrders').textContent = currentUser.stats.totalOrders;
+            document.getElementById('favoritesCount').textContent = currentUser.stats.favoritesCount;
+            document.getElementById('badgesEarned').textContent = currentUser.stats.badgesEarned;
+
+            // Load badges
+            loadBadges();
+
+            // Load preferences
+            loadPreferences();
+        }
+
+        function loadBadges() {
+            const badges = mockAPI.getBadges();
+            const badgesContainer = document.getElementById('badgesGrid');
+
+            badgesContainer.innerHTML = badges.map(badge => {
+                const isEarned = badge.earned;
+                const progressPercent = (badge.progress.completed / badge.progress.total) * 100;
+
+                return `
+                    <div class="badge-card ${isEarned ? 'earned' : 'locked'}" onclick="showBadgeModal(${badge.id})">
+                        ${isEarned ? '<div class="earned-badge">✓</div>' : ''}
+                        <div class="badge-icon">${badge.icon}</div>
+                        <div class="badge-name">${badge.name}</div>
+                        <div class="badge-description">${badge.description}</div>
+                        ${!isEarned ? `
+                            <div class="progress-container">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: ${progressPercent}%"></div>
+                                </div>
+                                <div class="progress-text">${badge.progress.completed}/${badge.progress.total} completed</div>
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function loadPreferences() {
+            const savedPreferences = localStorage.getItem('userPreferences');
+            let preferences = currentUser.preferences;
+
+            if (savedPreferences) {
+                preferences = { ...preferences, ...JSON.parse(savedPreferences) };
+            }
+
+            // Load cuisine preferences
+            const cuisineChips = document.getElementById('cuisineChips');
+            cuisineChips.innerHTML = preferences.cuisines.map(cuisine =>
+                `<span class="preference-chip">${cuisine}</span>`
+            ).join('');
+
+            // Load dietary preferences
+            const dietaryChips = document.getElementById('dietaryChips');
+            dietaryChips.innerHTML = preferences.dietary.map(dietary =>
+                `<span class="preference-chip">${dietary}</span>`
+            ).join('');
+
+            // Load spice level
+            const spiceLevels = ['Mild', 'Mild+', 'Medium', 'Medium+', 'Hot', 'Very Hot'];
+            document.getElementById('spiceLevel').textContent = `${spiceLevels[preferences.spiceLevel]} (${preferences.spiceLevel + 1}/5)`;
+
+            // Load budget range
+            if (preferences.budget) {
+                document.getElementById('budgetRange').textContent = `₹${preferences.budget[0]} - ₹${preferences.budget[1]}`;
+            }
+        }
+
+        function showBadgeModal(badgeId) {
+            const badges = mockAPI.getBadges();
+            const badge = badges.find(b => b.id === badgeId);
+
+            if (!badge) return;
+
+            // Populate modal
+            document.getElementById('modalBadgeIcon').textContent = badge.icon;
+            document.getElementById('modalBadgeName').textContent = badge.name;
+            document.getElementById('modalBadgeDesc').textContent = badge.description;
+
+            const progressPercent = (badge.progress.completed / badge.progress.total) * 100;
+            document.getElementById('modalProgressFill').style.width = progressPercent + '%';
+            document.getElementById('modalProgressText').textContent = `${badge.progress.completed}/${badge.progress.total} completed`;
+
+            // Load requirements
+            const requirementsContainer = document.getElementById('modalRequirements');
+            let requirementsHTML = '<div style="font-weight: 600; margin-bottom: 12px;">Requirements:</div>';
+
+            if (badge.criteria.requiredRestaurants.length > 0) {
+                requirementsHTML += badge.criteria.requiredRestaurants.map((restaurant, index) => {
+                    const completed = index < badge.progress.completed;
+                    return `
+                        <div class="requirement-item ${completed ? 'completed' : ''}">
+                            ${completed ? '✅' : '⭕'} Try ${restaurant}
+                        </div>
+                    `;
+                }).join('');
+            } else if (badge.criteria.threshold > 0) {
+                requirementsHTML += `
+                    <div class="requirement-item ${badge.earned ? 'completed' : ''}">
+                        ${badge.earned ? '✅' : '⭕'} Complete ${badge.criteria.threshold} actions
+                    </div>
+                `;
+            }
+
+            requirementsContainer.innerHTML = requirementsHTML;
+
+            // Show modal
+            document.getElementById('badgeModal').classList.add('active');
+        }
+
+        function closeBadgeModal() {
+            document.getElementById('badgeModal').classList.remove('active');
+        }
+
+        function editPreferences() {
+            if (confirm('This would open the preferences editor. For now, you can use the onboarding flow to change preferences.')) {
+                window.location.href = 'onboarding.html';
+            }
+        }
+
+        function exportData() {
+            // Mock data export
+            const userData = {
+                profile: currentUser,
+                favorites: JSON.parse(localStorage.getItem('favorites')) || { restaurants: [], dishes: [] },
+                preferences: JSON.parse(localStorage.getItem('userPreferences')) || {},
+                chatHistory: JSON.parse(localStorage.getItem('chatMessages')) || []
+            };
+
+            const dataStr = JSON.stringify(userData, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'swiggy-companion-data.json';
+            link.click();
+
+            URL.revokeObjectURL(url);
+            alert('Your data has been exported successfully!');
+        }
+
+        function clearChatHistory() {
+            if (confirm('Are you sure you want to clear all chat history? This action cannot be undone.')) {
+                localStorage.removeItem('chatMessages');
+                alert('Chat history cleared successfully!');
+            }
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('badgeModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeBadgeModal();
+            }
+        });
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', loadUserProfile);
+    </script>
+</body>
+</html>
